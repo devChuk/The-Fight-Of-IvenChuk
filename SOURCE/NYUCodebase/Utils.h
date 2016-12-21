@@ -20,7 +20,7 @@
 #define RESOURCE_FOLDER "NYUCodebase.app/Contents/Resources/"
 #endif
 
-enum Type { PLAYER, BLOCK };
+enum Type { PLAYER, BLOCK, WIZARD };
 
 class Ut {
 public:

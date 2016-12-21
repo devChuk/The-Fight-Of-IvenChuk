@@ -67,7 +67,7 @@ bool p2secondJump = false;
 // Game Object containers
 std::vector<Entity> players;
 std::vector<Entity> blocks;
-
+Entity Hadimioglu;
 
 // RENDERING AND UPDATING CODE____________________________________________________________________________________________________________________________
 void RenderMainMenu() {
@@ -76,17 +76,19 @@ void RenderMainMenu() {
 	modelMatrix.Translate(-1.0f, 2.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "IVEN VS CHUK", 0.2f, 0.0001f);
-	modelMatrix.Translate(0.5f, -0.5f, 0.0f);
+	
+	modelMatrix.identity();
+	modelMatrix.Translate(-0.5f, -1.25f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "CONTROLS", 0.2f, 0.0001f);
+	Hadimioglu.draw(program);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-2.6f, 0.0f, 0.0f);
+	modelMatrix.Translate(-2.6f, -1.5f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "USE ARROW/WASD KEYS TO MOVE", 0.2f, 0.0001f);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-1.0f, -1.0f, 0.0f);
+	modelMatrix.Translate(-1.0f, -1.75f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "1/B TO ATTACK", 0.2f, 0.0001f);
 
@@ -327,6 +329,8 @@ int main(int argc, char *argv[])
 
 	//Create GLUint textures
 	fontTexture = ut.LoadTexture("font1.png");
+	HALDUN = ut.LoadTexture("HaldunMode.png");
+	Hadimioglu = Entity(0.0f, 0.23f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
 
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
@@ -345,8 +349,8 @@ int main(int argc, char *argv[])
 	powerupTexture = ut.LoadTexture("cherry.png");
 
 	//Initialize entities
-	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
-	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
+	players.push_back(Entity(5.0f, -1.0f, 0.0f, -0.15f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
+	players.push_back(Entity(0.0f, -1.0f, 0.0f, -0.05f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
 	players[0].isStatic = false;
 	players[0].acceleration[1] = -9.8f;
 	players[1].isStatic = false;
