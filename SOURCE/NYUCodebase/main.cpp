@@ -71,7 +71,7 @@ bool p2secondJump = false;
 // Game Object containers
 std::vector<Entity> players;
 std::vector<Entity> blocks;
-Entity background1;//BF, FD, Temple
+std::vector<Entity> backgrounds;//BF, FD, Temple
 Entity Hadimioglu;
 
 // FUNCTIONS I CAN'T STICK ANYWHERE ELSE____________________________________________________________________________________________________________________________
@@ -414,12 +414,12 @@ int main(int argc, char *argv[])
 	HALDUN = ut.LoadTexture("HaldunMode.png");
 	Hadimioglu = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
 	
-	//temple = ut.LoadTexture("Temple.png");
-	//background1 = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, WIZARD);
-	/*fd = ut.LoadTexture("FinalDestination.png");
+	temple = ut.LoadTexture("Temple.png");
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, WIZARD));
+	fd = ut.LoadTexture("FinalDestination.png");
 	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 21.5f, 21.5f, WIZARD));
 	bf = ut.LoadTexture("Battlefield.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 21.5f, 21.5f, WIZARD));*/
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 21.5f, 21.5f, WIZARD));
 	
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
