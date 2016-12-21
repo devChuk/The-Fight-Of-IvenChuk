@@ -70,7 +70,7 @@ bool p2secondJump = false;
 // Game Object containers
 std::vector<Entity> players;
 std::vector<Entity> blocks;
-std::vector<Entity> backgrounds;//temple,fd,bf
+Entity background1;//BF, FD, Temple
 Entity Hadimioglu;
 
 // FUNCTIONS I CAN'T STICK ANYWHERE ELSE____________________________________________________________________________________________________________________________
@@ -337,6 +337,7 @@ void UpdateGameLevel(float elapsed) {
 	
 
 	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
+		
 		state = STATE_MAIN_MENU;
 		ut.refresh(projectionMatrix, viewMatrix, modelMatrix, program);
 	}
@@ -393,14 +394,14 @@ int main(int argc, char *argv[])
 	fontTexture = ut.LoadTexture("font1.png");
 	HALDUN = ut.LoadTexture("HaldunMode.png");
 	Hadimioglu = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
-
+	
 	temple = ut.LoadTexture("Temple.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, BLOCK));
-	fd = ut.LoadTexture("FinalDestination.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 21.5f, 21.5f, BLOCK));
-	bf = ut.LoadTexture("BattleField.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 21.5f, 21.5f, BLOCK));
-
+	background1 = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, WIZARD);
+	/*fd = ut.LoadTexture("FinalDestination.png");
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 21.5f, 21.5f, WIZARD));
+	bf = ut.LoadTexture("Battlefield.png");
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 21.5f, 21.5f, WIZARD));*/
+	
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukJumping.png"));//Jumping: 2
