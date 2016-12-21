@@ -105,7 +105,7 @@ void RenderGameLevel() {
 	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
 	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
-	float scale = ut.map(distance, 0.0f, 10.0f, 2.0f, 0.05f);
+	float scale = ut.map(distance, 0.0f, 10.0f, 1.5f, 0.05f);
 	if (scale <= 0)
 		scale *= -1;
 	if (scale < 0.7f)
@@ -201,14 +201,14 @@ void UpdateGameLevel(float elapsed) {
 	else if (p1controlsMoveRight)
 		players[0].speed[0] = playerSpeed;
 	if (p1controlsJump && players[0].collided[1])
-		players[0].speed[1] = 5.0f;
+		players[0].speed[1] = 3.0f;
 
 	if (p2controlsMoveLeft)
 		players[1].speed[0] = -playerSpeed;
 	else if (p2controlsMoveRight)
 		players[1].speed[0] = playerSpeed;
 	if (p2controlsJump && players[1].collided[1])
-		players[1].speed[1] = 5.0f;
+		players[1].speed[1] = 3.0f;
 }
 
 void Render() {
@@ -275,17 +275,17 @@ int main(int argc, char *argv[])
 	players[1].isStatic = false;
 	players[1].acceleration[1] = -0.01f;
 	
-	for (int i = 0; i < 55; i++) {
+	for (int i = 0; i < 50; i++) {
 		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 0.0f - (4 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
-	for (int i = 0; i < 4; i++) {
-		blocks.push_back(Entity(-2.0f + (i)* 0.2f, 0.0f - (1 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
+	//for (int i = 0; i < 4; i++) {
+	//	blocks.push_back(Entity(-2.0f + (i)* 0.2f, 0.0f - (1 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+	//}
 
-	for (int i = 0; i < 4; i++) {
-		blocks.push_back(Entity(1.0f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
+	//for (int i = 0; i < 4; i++) {
+	//	blocks.push_back(Entity(1.0f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+	//}
 
 	while (!done) {
 		// Keyboard Controls
