@@ -5,6 +5,7 @@
 #include <SDL_opengl.h>
 #include <SDL_image.h>
 #include <cstdlib>
+#include <stdlib.h>
 #include <ctime>
 #include <vector>
 
@@ -99,7 +100,14 @@ void RenderGameLevel() {
 		blocks[i].draw(program);
 	}
 	viewMatrix.identity();
-	viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
+	//viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
+	float averageViewX = abs(players[0].position[0] + players[1].position[0])/2;
+	float averageViewY = abs(players[0].position[1] + players[1].position[1])/2;
+	
+	if (players[0].position[0] <= 0.0f && players[1].position[0] <= 0.0f)
+		averageViewX *= -1;
+	viewMatrix.Translate(-averageViewX, averageViewY, 0.0f);
+
 	program->setViewMatrix(viewMatrix);
 }
 
@@ -251,8 +259,8 @@ int main(int argc, char *argv[])
 	powerupTexture = ut.LoadTexture("cherry.png");
 
 	//Initialize entities
-	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
-	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
+	players.push_back(Entity(3.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
+	players.push_back(Entity(2.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
 	players[0].isStatic = false;
 	players[0].acceleration[1] = -0.01f;
 	players[1].isStatic = false;
@@ -294,19 +302,19 @@ int main(int argc, char *argv[])
 					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 						p1controlsJump = true;
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT && players[0].boundaries[2] > -3.5f) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
 						p1controlsMoveLeft = true;
 					}
-					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT && players[0].boundaries[3] < 3.5f) {
+					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
 						p1controlsMoveRight = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
 						p2controlsJump = true;
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_A && players[0].boundaries[2] > -3.5f) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_A) {
 						p2controlsMoveLeft = true;
 					}
-					else if (event.key.keysym.scancode == SDL_SCANCODE_D && players[0].boundaries[3] < 3.5f) {
+					else if (event.key.keysym.scancode == SDL_SCANCODE_D) {
 						p2controlsMoveRight = true;
 					}
 					break;
