@@ -105,11 +105,11 @@ void RenderGameLevel() {
 	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
 	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
-	float scale = ut.map(distance, 0.0f, 10.0f, 1.5f, 0.05f);
-	if (scale <= 0)
-		scale *= -1;
-	if (scale < 0.7f)
-		scale = 0.7f;
+	float scale = ut.map(distance, 0.0f, 19.0f, 1.5f, 0.05f);
+	//if (scale <= 0)
+	//	scale *= -1;
+	if (scale < 0.3f)
+		scale = 0.3f;
 
 	viewMatrix.Scale(scale, scale, 1.0f);
 	viewMatrix.Translate(-averageViewX, -averageViewY, 0.0f);
@@ -296,7 +296,7 @@ int main(int argc, char *argv[])
 
 
 	// Battlefield
-	for (int i = -5; i < 55; i++) {
+	/*for (int i = -5; i < 55; i++) {
 		blocks.push_back(Entity(-2.5f + (i)* 0.2f, -2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
@@ -308,16 +308,33 @@ int main(int argc, char *argv[])
 
 	for (int i = 20; i < 30; i++) {
 		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
+	}*/
 
 	// Temple
-	/*for (int i = -5; i < 55; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, -2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+	for (int i = -5; i < 130; i++) {
+		if (i == 55)
+			i = 69;
+		blocks.push_back(Entity(-2.5f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
-	for (int i = 20; i < 30; i++) {
+	for (int i = 5; i < 45; i++) {
 		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}*/
+	}
+
+	for (int i = -5; i < 70; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, -5.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+	}
+
+	for (int i = 0; i < 18; i++) {
+		blocks.push_back(Entity(11.3, -2.0f - (i * 0.2f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+	}
+
+	for (int i = 90; i < 110; i++) {
+		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 4.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+	}
+
+
 
 
 	//for (int i = 0; i < 4; i++) {
