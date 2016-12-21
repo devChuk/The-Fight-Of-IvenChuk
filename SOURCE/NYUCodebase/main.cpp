@@ -43,7 +43,7 @@ Ut ut; // drawText(), LoadTexture()
 // GameLogic & Runtime Values
 enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL};
 enum GameStage { FINAL_DESTINATION, BATTLEFIELD, TEMPLE };
-int stage = TEMPLE;
+int stage = FINAL_DESTINATION;
 int state;
 bool gameOver = false;
 bool gameRunning = true;
@@ -171,6 +171,7 @@ void UpdateMainMenu(float elapsed) {
 }
 
 void RenderGameLevel() {
+	backgrounds[stage].draw(program);
 	players[1].draw(program);
 	players[0].draw(program);
 	for (size_t i = 0; i < blocks.size(); i++) {
@@ -185,11 +186,9 @@ void RenderGameLevel() {
 		modelMatrix.Translate(averageViewX - 2.0f, averageViewY, 0.0f);
 		program->setModelMatrix(modelMatrix);
 		if (players[0].position[1] <= -19.0f) {
-			viewMatrix.Translate(-players[1].position[0], -players[1].position[1], 0.0f);
 			ut.DrawText(program, fontTexture, "IVEN WINS", 0.5f, 0.0001f);
 		}
 		else if (players[1].position[1] <= -19.0f) {
-			viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
 			ut.DrawText(program, fontTexture, "CHUK WINS", 0.5f, 0.0001f);
 		}
 	}
@@ -206,6 +205,11 @@ void RenderGameLevel() {
 
 		program->setViewMatrix(viewMatrix);
 	}
+
+	modelMatrix.identity();
+	modelMatrix.Translate(players[0].position[0] - 0.25f, players[0].position[1] + 0.4f, 0.0f);
+	program->setModelMatrix(modelMatrix);
+	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
 }
 
 void UpdateGameLevel(float elapsed) {
@@ -356,10 +360,8 @@ void UpdateGameLevel(float elapsed) {
 	
 
 	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
-
 		gameOver = true;
 		gameRunning = false;
-		//viewMatrix.Translate
 	}
 }
 
@@ -415,12 +417,12 @@ int main(int argc, char *argv[])
 	HALDUN = ut.LoadTexture("HaldunMode.png");
 	Hadimioglu = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
 	
-	temple = ut.LoadTexture("Temple.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, WIZARD));
 	fd = ut.LoadTexture("FinalDestination.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 21.5f, 21.5f, WIZARD));
+	backgrounds.push_back(Entity(2.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 355.0f, 200.0f, WIZARD));
 	bf = ut.LoadTexture("Battlefield.png");
-	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 21.5f, 21.5f, WIZARD));
+	backgrounds.push_back(Entity(2.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 355.0f, 200.0f, WIZARD));
+	temple = ut.LoadTexture("Temple.png");
+	backgrounds.push_back(Entity(2.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 355.0f, 200.0f, WIZARD));
 	
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
