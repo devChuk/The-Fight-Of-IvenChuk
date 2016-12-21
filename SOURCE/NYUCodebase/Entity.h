@@ -45,6 +45,7 @@ public:
 	bool inAir = false;
 	bool attacking = false;
 	bool gettingWrecked = false;
+	bool dead = false;
 	float cooldown = 0;
 
 	Entity();

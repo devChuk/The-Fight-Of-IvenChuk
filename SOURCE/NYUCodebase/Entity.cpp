@@ -128,47 +128,51 @@ void Entity::updateY(float elapsed) {
 
 void Entity::animate(float elapsed) {
 	counter += elapsed;
-	if (gettingWrecked){
-		currT = 6;
-	}
-	else if (!inAir){//NOT in AIR
-		if (cooldown>=0.45f || attacking){
-			attacking = true;
-			currT = 7;
-			if (cooldown<0.5f){
-				currT = 8;
+	if (!dead){
+		if (gettingWrecked){
+			currT = 6;
+		}
+		else if (!inAir){//NOT in AIR
+			if (cooldown >= 0.45f || attacking){
+				attacking = true;
+				currT = 7;
+				if (cooldown < 0.5f){
+					currT = 8;
+				}
+				if (cooldown < 0.05f){
+					attacking = false;
+				}
 			}
-			if (cooldown < 0.05f){
-				attacking = false;
+			else if (speed[0] == 0){
+				if (fmod(counter, 1) >= 0.5)
+					currT = 0;
+				else
+					currT = 1;
+			}
+			else{
+				if (fmod(counter, 0.9) >= 0.6)
+					currT = 3;
+				else if (fmod(counter, 0.9) >= 0.3)
+					currT = 4;
+				else
+					currT = 5;
 			}
 		}
-		else if (speed[0] == 0){
-			if (fmod(counter, 1) >= 0.5)
-				currT = 0;
-			else
-				currT = 1;
-		}
-		else{
-			if (fmod(counter, 0.9) >= 0.6)
-				currT = 3;
-			else if (fmod(counter, 0.9) >= 0.3)
-				currT = 4;
-			else
-				currT = 5;
+		else{//YES in AIR
+			if (cooldown >= 0.45f || attacking){
+				attacking = true;
+				currT = 9;
+				if (cooldown < 0.15f)
+					attacking = false;
+			}
+			else{
+				currT = 2;
+			}
 		}
 	}
-	else{//YES in AIR
-		if (cooldown>=0.45f || attacking){
-			attacking = true;
-			currT = 9;
-			if (cooldown < 0.15f)
-				attacking = false;
-		}
-		else{
-			currT = 2;
-		}
+	else{
+		currT = 10;
 	}
-
 	if (currT >= texture.size())
 		currT = 0;
 	
