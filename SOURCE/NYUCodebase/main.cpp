@@ -327,21 +327,56 @@ void UpdateGameLevel(float elapsed) {
 	}
 	// Player 1 Attacks
 	if (p1NormalAttack && players[0].cooldown == 0) {
-		players[0].cooldown = p1CD;
 		Mix_PlayChannel(1, chukatk, 0);
-		float hitX = players[0].position[0] + (players[0].width * 1.0f);
-		float hitY = players[0].position[1];
-		float distance = sqrt(pow(hitX - players[1].position[0], 2) + pow(hitY - players[1].position[1], 2));
-		
-		if (distance < 1.0f) {
-			players[1].speed[1] = 6.6f;
-		}
+		if (!players[0].inAir) {
+			players[0].cooldown = p1CD;
+			float hitX = players[0].position[0] + (players[0].width * 1.0f);
+			float hitY = players[0].position[1];
+			float distance = sqrt(pow(hitX - players[1].position[0], 2) + pow(hitY - players[1].position[1], 2));
 
+			if (distance < 1.0f) {
+				players[1].speed[1] = 6.6f;
+				p2Health -= 10;
+			}
+		}
+		else {
+			players[0].cooldown = p1CD;
+			float hitX = players[0].position[0] + (players[0].width * 1.0f);
+			float hitY = players[0].position[1];
+			float distance = sqrt(pow(hitX - players[1].position[0], 2) + pow(hitY - players[1].position[1], 2));
+
+			if (distance < 1.0f) {
+				players[1].speed[1] = 6.6f;
+				p2Health -= 10;
+			}
+		}
 	}
 	// Player 2 Attacks
 	if (p2NormalAttack && players[1].cooldown == 0) {
 		players[1].cooldown = p2CD;
 		Mix_PlayChannel(1, ivenatk, 0);
+		if (!players[1].inAir) {
+			players[1].cooldown = p2CD;
+			float hitX = players[1].position[0] + (players[1].width * 1.0f);
+			float hitY = players[1].position[1];
+			float distance = sqrt(pow(hitX - players[0].position[0], 2) + pow(hitY - players[0].position[1], 2));
+
+			if (distance < 1.0f) {
+				players[0].speed[1] = 6.6f;
+				p1Health -= 10;
+			}
+		}
+		else {
+			players[1].cooldown = p2CD;
+			float hitX = players[1].position[0] + (players[1].width * 1.0f);
+			float hitY = players[1].position[1];
+			float distance = sqrt(pow(hitX - players[0].position[0], 2) + pow(hitY - players[0].position[1], 2));
+
+			if (distance < 1.0f) {
+				players[0].speed[1] = 6.6f;
+				p1Health -= 10;
+			}
+		}
 	}
 	// Player 1 JUMP
 	if (players[0].collided[1]) {
@@ -515,6 +550,8 @@ int main(int argc, char *argv[])
 							players[0].acceleration[1] = -9.8f;
 							players[1].isStatic = false;
 							players[1].acceleration[1] = -9.8f;
+							p1Health = 100;
+							p2Health = 100;
 
 							//Build map
 							blocks.clear();
