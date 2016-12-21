@@ -30,7 +30,7 @@ GLuint fontTexture;
 std::vector<GLuint> playerSpriteTexture, player2SpriteTexture;
 GLuint groundTexture;
 GLuint powerupTexture;
-GLuint HALDUN;
+GLuint HALDUN, temple, fd, bf;
 
 Matrix projectionMatrix;
 Matrix viewMatrix;
@@ -70,6 +70,7 @@ bool p2secondJump = false;
 // Game Object containers
 std::vector<Entity> players;
 std::vector<Entity> blocks;
+std::vector<Entity> backgrounds;//temple,fd,bf
 Entity Hadimioglu;
 
 // FUNCTIONS I CAN'T STICK ANYWHERE ELSE____________________________________________________________________________________________________________________________
@@ -392,7 +393,14 @@ int main(int argc, char *argv[])
 	//Create GLUint textures
 	fontTexture = ut.LoadTexture("font1.png");
 	HALDUN = ut.LoadTexture("HaldunMode.png");
-	Hadimioglu = Entity(0.0f, 0.23f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
+	Hadimioglu = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
+
+	temple = ut.LoadTexture("Temple.png");
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, BLOCK));
+	fd = ut.LoadTexture("FinalDestination.png");
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 21.5f, 21.5f, BLOCK));
+	bf = ut.LoadTexture("BattleField.png");
+	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { bf }, 21.5f, 21.5f, BLOCK));
 
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
