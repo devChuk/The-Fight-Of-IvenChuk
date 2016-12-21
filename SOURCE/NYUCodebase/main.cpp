@@ -54,6 +54,8 @@ bool p1controlsMoveRight = false;
 bool p1controlsJump = false;
 bool p1firstJump = false;
 bool p1secondJump = false;
+float p1timeSinceLastJump = 0.0f;
+float p2timeSinceLastJump = 0.0f;
 
 bool p2controlsMoveLeft = false;
 bool p2controlsMoveRight = false;
@@ -201,6 +203,7 @@ void UpdateGameLevel(float elapsed) {
 	players[1].speed[0] = 0.0f;
 	
 	// handle controls
+	// Player 1
 	if (p1controlsMoveLeft){
 		players[0].speed[0] = -playerSpeed;
 		players[0].width = -1;
@@ -209,9 +212,7 @@ void UpdateGameLevel(float elapsed) {
 		players[0].speed[0] = playerSpeed;
 		players[0].width = 1;
 	}
-	if (p1controlsJump && players[0].collided[1])
-		players[0].speed[1] = 6.6f;
-
+	// Player 2
 	if (p2controlsMoveLeft){
 		players[1].speed[0] = -playerSpeed;
 		players[1].width = -1;
@@ -220,10 +221,55 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[0] = playerSpeed;
 		players[1].width = 1;
 	}
-	if (p2controlsJump && players[1].collided[1]) {
-		players[1].speed[1] = 6.6f;
-			
+	// Player 1 JUMP
+	if (p1controlsJump) {
+		if (!p1firstJump && players[0].collided[1]) {
+			players[0].speed[1] = 6.6f;
+			p1timeSinceLastJump = 0.0f;
+			p1firstJump = true;
+			p1secondJump = false;
+		}
+		else if (p1firstJump && !p1secondJump && p1timeSinceLastJump > 0.4f) {
+			p1secondJump = true;
+			players[0].speed[1] = 6.6f;
+		}
 	}
+	if (p1firstJump && p1secondJump && players[0].collided[1]) {
+		p1firstJump = false;
+		p1secondJump = false;
+	}
+	if (!players[0].collided[1] && !p1firstJump && !p1secondJump && p1controlsJump) {
+		p1secondJump = true;
+		players[0].speed[1] = 6.6f;
+	}
+	// Player 2 JUMP
+	/*if (p2controlsJump && players[1].collided[1]) {
+		players[1].speed[1] = 6.6f;
+	}*/
+	if (p2controlsJump) {
+		if (!p2firstJump && players[1].collided[1]) {
+			players[1].speed[1] = 6.6f;
+			p2timeSinceLastJump = 0.0f;
+			p2firstJump = true;
+			p2secondJump = false;
+		}
+		else if (p2firstJump && !p2secondJump && p2timeSinceLastJump > 0.4f) {
+			p2secondJump = true;
+			players[1].speed[1] = 6.6f;
+		}
+	}
+	if (p2firstJump && p2secondJump && players[1].collided[1]) {
+		p2firstJump = false;
+		p2secondJump = false;
+	}
+	if (!players[1].collided[1] && !p2firstJump && !p2secondJump && p2controlsJump) {
+		p2secondJump = true;
+		players[1].speed[1] = 6.6f;
+	}
+
+
+
+
 	players[0].animate(elapsed);
 	players[1].animate(elapsed);
 }
@@ -443,6 +489,8 @@ int main(int argc, char *argv[])
 				fixedElapsed -= FIXED_TIMESTEP;
 				Update(FIXED_TIMESTEP);
 			}
+			p1timeSinceLastJump += fixedElapsed;
+			p2timeSinceLastJump += fixedElapsed;
 			Update(fixedElapsed);
 			Render();
 		}
