@@ -211,12 +211,12 @@ void RenderGameLevel() {
 	modelMatrix.identity();
 	modelMatrix.Translate(players[0].position[0] - 0.25f, players[0].position[1] + 0.4f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
+	ut.DrawText(program, fontTexture, std::to_string(p1Health), 0.2f, 0.000001f);
 
 	modelMatrix.identity();
 	modelMatrix.Translate(players[1].position[0] - 0.25f, players[1].position[1] + 0.4f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
+	ut.DrawText(program, fontTexture, std::to_string(p2Health), 0.2f, 0.000001f);
 }
 
 void UpdateGameLevel(float elapsed) {
