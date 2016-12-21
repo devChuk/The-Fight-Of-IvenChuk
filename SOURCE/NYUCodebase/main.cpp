@@ -55,7 +55,7 @@ float deathCounter = 0.0f;
 #define MAX_TIMESTEPS 6
 #define ANAPEN 0.0001f
 #define p1CD 0.7f
-#define p2CD 1.4f
+#define p2CD 1.0f
 
 // Player Attributes. p1 is players[0]. p2 is players[1]
 float playerSpeed = 3.0f;
@@ -353,7 +353,7 @@ void UpdateGameLevel(float elapsed) {
 				players[1].speed[1] = 2.0f;
 				p2Health -= 15;
 				players[1].gettingWrecked = true;
-				players[1].cooldown = 0.55;
+				players[1].cooldown = 0.5;
 			}
 		}
 	}
@@ -382,9 +382,9 @@ void UpdateGameLevel(float elapsed) {
 
 			if (distance < 0.7f) {
 				players[0].speed[1] = 2.0f;
-				p1Health -= 20;
+				p1Health -= 25;
 				players[0].gettingWrecked = true;
-				players[0].cooldown = 0.5;
+				players[0].cooldown = 0.6;
 			}
 		}
 	}
