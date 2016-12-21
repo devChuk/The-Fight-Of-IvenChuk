@@ -22,8 +22,9 @@
 #endif
 
 // GLOBAL GAME VARIABLES____________________________________________________________________________________________________________________________
-//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-
+int MOA = Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+Mix_Chunk *chukatk,*ivenatk;
+Mix_Music *music;
 // SDL & Rendering Objects
 SDL_Window* displayWindow;
 GLuint fontTexture;
@@ -437,6 +438,15 @@ int main(int argc, char *argv[])
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
 
+	//Sounds
+	music = Mix_LoadMUS("VVVVVV Soundtrack 0616 Passion For Exploring.mp3");
+	Mix_PlayMusic(music, -1);
+
+	chukatk = Mix_LoadWAV("ChukHitsound.wav");
+	ivenatk = Mix_LoadWAV("IvenHitsound.wav");
+	//Mix_PlayChannel(1, chukatk, 0);
+	//Mix_PlayChannel(2, ivenatk, 0);
+
 	while (!done) {
 		// Keyboard Controls
 		while (SDL_PollEvent(&event)) {
@@ -574,6 +584,10 @@ int main(int argc, char *argv[])
 			Render();
 		}
 	}
+
+	Mix_FreeChunk(chukatk);
+	Mix_FreeChunk(ivenatk);
+	Mix_FreeMusic(music);
 
 	SDL_Quit();
 	return 0;
