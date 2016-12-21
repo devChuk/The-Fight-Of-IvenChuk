@@ -115,9 +115,7 @@ void RenderGameLevel() {
 	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
 	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
-	float scale = ut.map(distance, 0.0f, 19.0f, 1.0f, 0.05f);
-	//if (scale <= 0)
-	//	scale *= -1;
+	float scale = ut.map(distance, 0.0f, 18.0f, 1.0f, 0.05f);
 	if (scale < 0.3f)
 		scale = 0.3f;
 
@@ -248,9 +246,6 @@ void UpdateGameLevel(float elapsed) {
 		players[0].speed[1] = 6.6f;
 	}
 	// Player 2 JUMP
-	/*if (p2controlsJump && players[1].collided[1]) {
-		players[1].speed[1] = 6.6f;
-	}*/
 	if (p2controlsJump) {
 		players[1].inAir = true;
 		if (!p2firstJump && players[1].collided[1]) {
@@ -273,11 +268,15 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[1] = 6.6f;
 	}
 
-
-
-
 	players[0].animate(elapsed);
 	players[1].animate(elapsed);
+	
+
+	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
+		
+		state = STATE_MAIN_MENU;
+		ut.refresh(projectionMatrix, viewMatrix, modelMatrix, program);
+	}
 }
 
 void Render() {
@@ -349,8 +348,9 @@ int main(int argc, char *argv[])
 	powerupTexture = ut.LoadTexture("cherry.png");
 
 	//Initialize entities
-	players.push_back(Entity(5.0f, -1.0f, 0.0f, -0.15f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
-	players.push_back(Entity(0.0f, -1.0f, 0.0f, -0.05f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
+	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
+	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
+	players[0].width = -1;
 	players[0].isStatic = false;
 	players[0].acceleration[1] = -9.8f;
 	players[1].isStatic = false;
