@@ -72,13 +72,73 @@ std::vector<Entity> players;
 std::vector<Entity> blocks;
 Entity Hadimioglu;
 
+// FUNCTIONS I CAN'T STICK ANYWHERE ELSE____________________________________________________________________________________________________________________________
+void setUpStage(int& mapstage, std::vector<Entity>& blocks) {
+	// Final Destination
+
+	if (mapstage == FINAL_DESTINATION) {
+		for (int i = 0; i < 50; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, 0.0f - (4 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+	}
+	else if (mapstage == BATTLEFIELD) {
+		for (int i = -5; i < 55; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, -2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+
+		for (int i = 0; i < 50; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+			if (i == 10)
+				i = 40;
+		}
+
+		for (int i = 20; i < 30; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+	}
+	else if (mapstage == TEMPLE) {
+		for (int i = -5; i < 130; i++) {
+			if (i == 55)
+				i = 69;
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+
+		for (int i = 5; i < 45; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+
+		for (int i = -5; i < 70; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, -5.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+
+		for (int i = 0; i < 18; i++) {
+			blocks.push_back(Entity(11.3, -2.0f - (i * 0.2f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+
+		for (int i = 90; i < 110; i++) {
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+			blocks.push_back(Entity(-2.5f + (i)* 0.2f, 4.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		}
+	}
+}
+
 // RENDERING AND UPDATING CODE____________________________________________________________________________________________________________________________
 void RenderMainMenu() {
 	//draws text
 	modelMatrix.identity();
-	modelMatrix.Translate(-1.0f, 2.0f, 0.0f);
+	modelMatrix.Translate(-3.7f, 2.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "IVEN VS CHUK", 0.2f, 0.0001f);
+
+	modelMatrix.identity();
+	modelMatrix.Translate(-0.5f, 2.0f, 0.0f);
+	program->setModelMatrix(modelMatrix);
+	if (stage == FINAL_DESTINATION)
+		ut.DrawText(program, fontTexture, "MAP: FINAL DESTINATION", 0.2f, 0.0001f);
+	else if (stage == BATTLEFIELD)
+		ut.DrawText(program, fontTexture, "MAP: BATTLEFIELD", 0.2f, 0.0001f);
+	else
+		ut.DrawText(program, fontTexture, "MAP: TEMPLE", 0.2f, 0.0001f);
 	
 	modelMatrix.identity();
 	modelMatrix.Translate(-0.5f, -1.25f, 0.0f);
@@ -86,9 +146,9 @@ void RenderMainMenu() {
 	Hadimioglu.draw(program);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-2.9f, -1.5f, 0.0f);
+	modelMatrix.Translate(-3.9f, -1.5f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "USE ARROWS / WASD KEYS TO MOVE", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "USE ARROW/WASD KEYS TO MOVE & SELECT MAP", 0.2f, 0.0001f);
 
 	modelMatrix.identity();
 	modelMatrix.Translate(-2.2f, -1.75f, 0.0f);
@@ -349,51 +409,6 @@ int main(int argc, char *argv[])
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning3.png"));
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
-	
-	// Final Destination
-	/*for (int i = 0; i < 50; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 0.0f - (4 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}*/
-
-
-	// Battlefield
-	/*for (int i = -5; i < 55; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, -2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
-
-	for (int i = 0; i < 50; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-		if (i == 10)
-			i = 40;
-	}
-
-	for (int i = 20; i < 30; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}*/
-
-	// Temple
-	for (int i = -5; i < 130; i++) {
-		if (i == 55)
-			i = 69;
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
-
-	for (int i = 5; i < 45; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
-
-	for (int i = -5; i < 70; i++) {
-			blocks.push_back(Entity(-2.5f + (i)* 0.2f, -5.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
-
-	for (int i = 0; i < 18; i++) {
-		blocks.push_back(Entity(11.3, -2.0f - (i * 0.2f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
-
-	for (int i = 90; i < 110; i++) {
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 4.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	}
 
 	while (!done) {
 		// Keyboard Controls
@@ -405,7 +420,6 @@ int main(int argc, char *argv[])
 					if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
 						//firing, starting the game
 						if (state == STATE_MAIN_MENU) {
-							state = STATE_GAME_LEVEL;
 
 							//Initialize entities
 							players.clear();
@@ -418,8 +432,10 @@ int main(int argc, char *argv[])
 							players[1].acceleration[1] = -9.8f;
 
 							//Build map
-							
+							blocks.clear();
+							setUpStage(stage, blocks);
 
+							state = STATE_GAME_LEVEL;
 						}
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
