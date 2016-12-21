@@ -39,11 +39,12 @@ public:
 	float v;
 	float width;
 	float height;
-	GLuint texture;
+	std::vector<GLuint> texture;
+	int currT;
 
 	Entity();
-	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, GLuint spriteTexture, Type newType);
-	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, GLuint spriteTexture, float sizeX, float sizeY, Type newType);
+	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, Type newType);
+	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, float sizeX, float sizeY, Type newType);
 	void draw(ShaderProgram* program);
 	void update(float elapsed);
 	void updateX(float elapsed);

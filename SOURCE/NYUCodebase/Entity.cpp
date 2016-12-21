@@ -2,7 +2,7 @@
 
 Entity::Entity() {}
 
-Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, GLuint spriteTexture, Type newType) {
+Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, Type newType) {
 	position[0] = x;
 	position[1] = y;
 	speed[0] = dx;
@@ -23,10 +23,11 @@ Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth
 	width = spriteWidth;
 	height = spriteHeight;
 	texture = spriteTexture;
+	currT = 0;
 
 	type = newType;
 }
-Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, GLuint spriteTexture, float sizeX, float sizeY, Type newType) {
+Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, float sizeX, float sizeY, Type newType) {
 	position[0] = x;
 	position[1] = y;
 	speed[0] = dx;
@@ -47,6 +48,7 @@ Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth
 	width = spriteWidth;
 	height = spriteHeight;
 	texture = spriteTexture;
+	currT = 0;
 
 	type = newType;
 }
@@ -86,7 +88,7 @@ void Entity::draw(ShaderProgram* program) {
 	glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoordData.data());
 	glEnableVertexAttribArray(program->texCoordAttribute);
 
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture[currT]);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(program->positionAttribute);
@@ -105,6 +107,11 @@ void Entity::update(float elapsed) {
 		position[1] += speed[1] * elapsed;
 		boundaries[0] += speed[1] * elapsed;
 		boundaries[1] += speed[1] * elapsed;
+	}
+	if ((elapsed / 5.0) == int(elapsed / 5.0)){
+		++currT;
+		if (currT >= texture.size())
+			currT = 0;
 	}
 }
 

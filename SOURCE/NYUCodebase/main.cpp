@@ -25,7 +25,7 @@
 // SDL & Rendering Objects
 SDL_Window* displayWindow;
 GLuint fontTexture;
-GLuint playerSpriteTexture;
+std::vector<GLuint> playerSpriteTexture, player2SpriteTexture;
 GLuint groundTexture;
 GLuint powerupTexture;
 
@@ -257,28 +257,31 @@ int main(int argc, char *argv[])
 
 	//Create GLUint textures
 	fontTexture = ut.LoadTexture("font1.png");
-	playerSpriteTexture = ut.LoadTexture("p1_jump.png");
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding1.png"));
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding2.png"));
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
 
 	//Initialize entities
-	players.push_back(Entity(3.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
-	players.push_back(Entity(2.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
+	players.push_back(Entity(3.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));
+	players.push_back(Entity(2.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));
 	players[0].isStatic = false;
 	players[0].acceleration[1] = -0.01f;
 	players[1].isStatic = false;
 	players[1].acceleration[1] = -0.01f;
 	
 	for (int i = 0; i < 55; i++) {
-		blocks.push_back(Entity(-2.5f + (i) * 0.2f, 0.0f - (4 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, groundTexture, BLOCK));
+		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 0.0f - (4 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
 	for (int i = 0; i < 4; i++) {
-		blocks.push_back(Entity(-2.0f + (i)* 0.2f, 0.0f - (1 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, groundTexture, BLOCK));
+		blocks.push_back(Entity(-2.0f + (i)* 0.2f, 0.0f - (1 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
 	for (int i = 0; i < 4; i++) {
-		blocks.push_back(Entity(1.0f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, groundTexture, BLOCK));
+		blocks.push_back(Entity(1.0f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
 	while (!done) {
