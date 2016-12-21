@@ -6,6 +6,7 @@
 #include <SDL_image.h>
 #include <cstdlib>
 #include <stdlib.h>
+#include <math.h>
 #include <ctime>
 #include <vector>
 
@@ -100,15 +101,17 @@ void RenderGameLevel() {
 		blocks[i].draw(program);
 	}
 	viewMatrix.identity();
-	//viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
 	float averageViewX = (players[0].position[0] + players[1].position[0])/2;
 	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
-	//if (players[0].position[0] <= 0.0f && players[1].position[0] <= 0.0f)
-	//	averageViewX *= -1;
-	float scale = 1.0f;
+	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
+	float scale = ut.map(distance, 0.0f, 10.0f, 2.0f, 0.05f);
+	if (scale <= 0)
+		scale *= -1;
+	if (scale < 0.7f)
+		scale = 0.7f;
 
-	//viewMatrix.Scale(2.0f, 2.0f, 2.0f);
+	viewMatrix.Scale(scale, scale, 1.0f);
 	viewMatrix.Translate(-averageViewX, -averageViewY, 0.0f);
 
 	program->setViewMatrix(viewMatrix);
