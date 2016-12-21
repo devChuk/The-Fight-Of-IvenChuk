@@ -45,10 +45,14 @@ float elapsed;
 #define MAX_TIMESTEPS 6
 
 // Player Attributes. p1 is players[0]. p2 is players[1]
+float playerSpeed = 3.0f;
 bool p1controlsMoveLeft = false;
 bool p1controlsMoveRight = false;
 bool p1controlsJump = false;
-float playerSpeed = 3.0f;
+
+bool p2controlsMoveLeft = false;
+bool p2controlsMoveRight = false;
+bool p2controlsJump = false;
 
 // Game Object containers
 std::vector<Entity> players;
@@ -184,6 +188,13 @@ void UpdateGameLevel(float elapsed) {
 		players[0].speed[0] = playerSpeed;
 	if (p1controlsJump && players[0].collided[1])
 		players[0].speed[1] = 5.0f;
+
+	if (p2controlsMoveLeft)
+		players[1].speed[0] = -playerSpeed;
+	else if (p2controlsMoveRight)
+		players[1].speed[0] = playerSpeed;
+	if (p2controlsJump && players[1].collided[1])
+		players[1].speed[1] = 5.0f;
 }
 
 void Render() {
@@ -266,15 +277,22 @@ int main(int argc, char *argv[])
 				done = true;
 			switch (event.type) {
 				case SDL_KEYDOWN:
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
 						//firing, starting the game
-						if (state == STATE_MAIN_MENU) {
+						if (state == STATE_MAIN_MENU)
 							state = STATE_GAME_LEVEL;
-						}
-						else {
-							//jump.
-							p1controlsJump = true;
-						}
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+						// Neutral Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2) {
+						// Strong Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3) {
+						// Up Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
+						p1controlsJump = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT && players[0].boundaries[2] > -3.5f) {
 						p1controlsMoveLeft = true;
@@ -282,16 +300,43 @@ int main(int argc, char *argv[])
 					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT && players[0].boundaries[3] < 3.5f) {
 						p1controlsMoveRight = true;
 					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
+						p2controlsJump = true;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_A && players[0].boundaries[2] > -3.5f) {
+						p2controlsMoveLeft = true;
+					}
+					else if (event.key.keysym.scancode == SDL_SCANCODE_D && players[0].boundaries[3] < 3.5f) {
+						p2controlsMoveRight = true;
+					}
 					break;
 				case SDL_KEYUP:
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+						// Neutral Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2) {
+						// Strong Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3) {
+						// Up Attack
+					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
 						p1controlsMoveLeft = false;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
 						p1controlsMoveRight = false;
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 						p1controlsJump = false;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_A) {
+						p2controlsMoveLeft = false;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_D) {
+						p2controlsMoveRight = false;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
+						p2controlsJump = false;
 					}
 					break;
 			}
