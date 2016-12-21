@@ -128,7 +128,7 @@ void Entity::updateY(float elapsed) {
 
 void Entity::animate(float elapsed) {
 	counter += roundf(elapsed * 100) / 100;;
-	if (abs(speed[1])<0.1){//NOT in AIR
+	if (!inAir){//NOT in AIR
 		if (speed[0] == 0){
 			if (fmod(counter, 1) >= 0.5)
 				currT = 0;

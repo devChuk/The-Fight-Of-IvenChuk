@@ -29,6 +29,7 @@ GLuint fontTexture;
 std::vector<GLuint> playerSpriteTexture, player2SpriteTexture;
 GLuint groundTexture;
 GLuint powerupTexture;
+GLuint HALDUN;
 
 Matrix projectionMatrix;
 Matrix viewMatrix;
@@ -152,6 +153,7 @@ void UpdateGameLevel(float elapsed) {
 					players[k].boundaries[0] += penetration + ANAPEN;
 					players[k].boundaries[1] += penetration + ANAPEN;
 					players[k].collided[1] = true;
+					players[k].inAir = false;
 				}
 				else {
 					players[k].position[1] -= (penetration + ANAPEN);
@@ -205,11 +207,11 @@ void UpdateGameLevel(float elapsed) {
 	// handle controls
 	// Player 1
 	if (p1controlsMoveLeft){
-		players[0].speed[0] = -playerSpeed;
+		players[0].speed[0] = -playerSpeed*1.5;
 		players[0].width = -1;
 	}
 	else if (p1controlsMoveRight){
-		players[0].speed[0] = playerSpeed;
+		players[0].speed[0] = playerSpeed*1.5;
 		players[0].width = 1;
 	}
 	// Player 2
@@ -223,6 +225,7 @@ void UpdateGameLevel(float elapsed) {
 	}
 	// Player 1 JUMP
 	if (p1controlsJump) {
+		players[0].inAir = true;
 		if (!p1firstJump && players[0].collided[1]) {
 			players[0].speed[1] = 6.6f;
 			p1timeSinceLastJump = 0.0f;
@@ -247,6 +250,7 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[1] = 6.6f;
 	}*/
 	if (p2controlsJump) {
+		players[1].inAir = true;
 		if (!p2firstJump && players[1].collided[1]) {
 			players[1].speed[1] = 6.6f;
 			p2timeSinceLastJump = 0.0f;

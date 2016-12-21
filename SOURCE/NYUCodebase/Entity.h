@@ -42,6 +42,7 @@ public:
 	std::vector<GLuint> texture;
 	int currT;
 	float counter = 0;
+	bool inAir = false;
 
 	Entity();
 	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, Type newType);
