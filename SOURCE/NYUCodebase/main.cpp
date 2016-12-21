@@ -271,9 +271,9 @@ int main(int argc, char *argv[])
 	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));
 	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));
 	players[0].isStatic = false;
-	players[0].acceleration[1] = -0.02f;
+	players[0].acceleration[1] = -9.8f;
 	players[1].isStatic = false;
-	players[1].acceleration[1] = -0.02f;
+	players[1].acceleration[1] = -9.8f;
 	
 	// Final Destination
 	/*for (int i = 0; i < 50; i++) {

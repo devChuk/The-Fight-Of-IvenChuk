@@ -110,7 +110,7 @@ void Entity::update(float elapsed) {
 
 void Entity::updateX(float elapsed) {
 	if (!isStatic) {
-		speed[0] += acceleration[0];
+		speed[0] += acceleration[0] * elapsed;
 		position[0] += speed[0] * elapsed;
 		boundaries[2] += speed[0] * elapsed;
 		boundaries[3] += speed[0] * elapsed;
@@ -126,7 +126,7 @@ void Entity::updateY(float elapsed) {
 	if (currT >= texture.size())
 		currT = 0;
 	if (!isStatic) {
-		speed[1] += acceleration[1];
+		speed[1] += acceleration[1] * elapsed;
 		position[1] += speed[1] * elapsed;
 		boundaries[0] += speed[1] * elapsed;
 		boundaries[1] += speed[1] * elapsed;
