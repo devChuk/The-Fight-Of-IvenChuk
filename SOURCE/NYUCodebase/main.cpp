@@ -281,16 +281,22 @@ int main(int argc, char *argv[])
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukJumping.png"));//Jumping: 2
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukRunning.png"));//Running: 3-5
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukRunning.png"));
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukRunning.png"));
 
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding1.png"));//Standing: 0-1
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding2.png"));
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenJumping.png"));//Jumping: 2
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning1.png"));//Running: 3-5
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning2.png"));
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning3.png"));
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
 
 	//Initialize entities
-	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));
-	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));
+	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
+	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
 	players[0].isStatic = false;
 	players[0].acceleration[1] = -9.8f;
 	players[1].isStatic = false;
