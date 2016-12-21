@@ -336,7 +336,6 @@ void UpdateGameLevel(float elapsed) {
 	
 
 	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
-		
 		state = STATE_MAIN_MENU;
 		ut.refresh(projectionMatrix, viewMatrix, modelMatrix, program);
 	}
