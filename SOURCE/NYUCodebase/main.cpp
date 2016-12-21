@@ -444,7 +444,7 @@ void UpdateGameLevel(float elapsed) {
 		dead = true;
 	}
 
-	if (deathCounter >= 4.0f) {
+	if (deathCounter >= 1.0f) {
 		gameOver = true;
 		gameRunning = false;
 	}
