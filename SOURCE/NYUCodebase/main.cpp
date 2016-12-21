@@ -101,12 +101,15 @@ void RenderGameLevel() {
 	}
 	viewMatrix.identity();
 	//viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
-	float averageViewX = abs(players[0].position[0] + players[1].position[0])/2;
-	float averageViewY = abs(players[0].position[1] + players[1].position[1])/2;
+	float averageViewX = (players[0].position[0] + players[1].position[0])/2;
+	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
-	if (players[0].position[0] <= 0.0f && players[1].position[0] <= 0.0f)
-		averageViewX *= -1;
-	viewMatrix.Translate(-averageViewX, averageViewY, 0.0f);
+	//if (players[0].position[0] <= 0.0f && players[1].position[0] <= 0.0f)
+	//	averageViewX *= -1;
+	float scale = 1.0f;
+
+	//viewMatrix.Scale(2.0f, 2.0f, 2.0f);
+	viewMatrix.Translate(-averageViewX, -averageViewY, 0.0f);
 
 	program->setViewMatrix(viewMatrix);
 }
