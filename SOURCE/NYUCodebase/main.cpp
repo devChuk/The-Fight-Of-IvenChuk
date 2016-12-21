@@ -336,7 +336,7 @@ void UpdateGameLevel(float elapsed) {
 			float hitY = players[0].position[1];
 			float distance = sqrt(pow(hitX - players[1].position[0], 2) + pow(hitY - players[1].position[1], 2));
 
-			if (distance < 0.5f) {
+			if (distance < 0.7f) {
 				players[1].speed[1] = 2.0f;
 				p2Health -= 10;
 				players[1].gettingWrecked = true;
@@ -363,11 +363,11 @@ void UpdateGameLevel(float elapsed) {
 		Mix_PlayChannel(1, ivenatk, 0);
 		if (!players[1].inAir) {
 			players[1].cooldown = p2CD;
-			float hitX = players[1].position[0] + (players[1].width * 1.0f);
+			float hitX = players[1].position[0] + (players[1].width * 0.5f);
 			float hitY = players[1].position[1];
 			float distance = sqrt(pow(hitX - players[0].position[0], 2) + pow(hitY - players[0].position[1], 2));
 
-			if (distance < 1.0f) {
+			if (distance < 0.5f) {
 				players[0].speed[1] = 2.0f;
 				p1Health -= 10;
 				players[0].gettingWrecked = true;
@@ -376,11 +376,11 @@ void UpdateGameLevel(float elapsed) {
 		}
 		else {
 			players[1].cooldown = p2CD;
-			float hitX = players[1].position[0] + (players[1].width * 1.0f);
-			float hitY = players[1].position[1];
+			float hitX = players[1].position[0] + (players[1].width * 0.7f);
+			float hitY = players[1].position[1] - 0.7f;
 			float distance = sqrt(pow(hitX - players[0].position[0], 2) + pow(hitY - players[0].position[1], 2));
 
-			if (distance < 1.0f) {
+			if (distance < 0.7f) {
 				players[0].speed[1] = 2.0f;
 				p1Health -= 10;
 				players[0].gettingWrecked = true;
