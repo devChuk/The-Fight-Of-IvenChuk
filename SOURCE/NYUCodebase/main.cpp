@@ -49,6 +49,8 @@ bool gameOver = false;
 bool gameRunning = true;
 float lastFrameTicks = 0.0f;
 float elapsed;
+bool dead = false;
+float deathCounter = 0.0f;
 #define FIXED_TIMESTEP 0.0166666f
 #define MAX_TIMESTEPS 6
 #define ANAPEN 0.0001f
@@ -195,10 +197,10 @@ void RenderGameLevel() {
 		modelMatrix.identity();
 		modelMatrix.Translate(averageViewX - 2.0f, averageViewY, 0.0f);
 		program->setModelMatrix(modelMatrix);
-		if (players[0].position[1] <= -19.0f) {
+		if (players[0].position[1] <= -19.0f || p1Health <= 0) {
 			ut.DrawText(program, fontTexture, "IVEN WINS", 0.5f, 0.0001f);
 		}
-		else if (players[1].position[1] <= -19.0f) {
+		else if (players[1].position[1] <= -19.0f || p2Health <= 0) {
 			ut.DrawText(program, fontTexture, "CHUK WINS", 0.5f, 0.0001f);
 		}
 	}
@@ -338,6 +340,7 @@ void UpdateGameLevel(float elapsed) {
 				players[1].speed[1] = 2.0f;
 				p2Health -= 10;
 				players[1].gettingWrecked = true;
+				players[1].cooldown = 0.3;
 			}
 		}
 		else {
@@ -350,6 +353,7 @@ void UpdateGameLevel(float elapsed) {
 				players[1].speed[1] = 2.0f;
 				p2Health -= 10;
 				players[1].gettingWrecked = true;
+				players[1].cooldown = 0.3;
 			}
 		}
 	}
@@ -364,7 +368,7 @@ void UpdateGameLevel(float elapsed) {
 			float distance = sqrt(pow(hitX - players[0].position[0], 2) + pow(hitY - players[0].position[1], 2));
 
 			if (distance < 1.0f) {
-				players[0].speed[1] = 6.6f;
+				players[0].speed[1] = 2.0f;
 				p1Health -= 10;
 				players[0].gettingWrecked = true;
 			}
@@ -376,7 +380,7 @@ void UpdateGameLevel(float elapsed) {
 			float distance = sqrt(pow(hitX - players[0].position[0], 2) + pow(hitY - players[0].position[1], 2));
 
 			if (distance < 1.0f) {
-				players[0].speed[1] = 6.6f;
+				players[0].speed[1] = 2.0f;
 				p1Health -= 10;
 				players[0].gettingWrecked = true;
 			}
@@ -431,6 +435,16 @@ void UpdateGameLevel(float elapsed) {
 	players[1].animate(elapsed);
 	
 	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f || p1Health <= 0 || p2Health <= 0) {
+		if (p1Health <= 0) {
+			players[0].dead = true;
+		}
+		if (p2Health <= 0) {
+			players[1].dead = true;
+		}
+		dead = true;
+	}
+
+	if (deathCounter >= 4.0f) {
 		gameOver = true;
 		gameRunning = false;
 	}
@@ -564,7 +578,8 @@ int main(int argc, char *argv[])
 							//Build map
 							blocks.clear();
 							setUpStage(stage, blocks);
-
+							dead = false;
+							deathCounter = 0.0f;
 							state = STATE_GAME_LEVEL;
 						}
 					}
@@ -700,6 +715,8 @@ int main(int argc, char *argv[])
 				if (players[1].cooldown <= 0)
 					players[1].cooldown = 0;
 			}
+			if (dead)
+				deathCounter += fixedElapsed;
 			///
 
 			Update(fixedElapsed);
