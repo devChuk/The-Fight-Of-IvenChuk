@@ -306,7 +306,7 @@ int main(int argc, char *argv[])
 						p1controlsMoveLeft = true;
 					}
 					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-						p1controlsMoveRight = true;
+						p1controlsMoveRight = true; 
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
 						p2controlsJump = true;
