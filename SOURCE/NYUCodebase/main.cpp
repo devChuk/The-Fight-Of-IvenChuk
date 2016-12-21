@@ -45,6 +45,7 @@ float lastFrameTicks = 0.0f;
 float elapsed;
 #define FIXED_TIMESTEP 0.0166666f
 #define MAX_TIMESTEPS 6
+#define ANAPEN 0.0001f
 
 // Player Attributes. p1 is players[0]. p2 is players[1]
 float playerSpeed = 3.0f;
@@ -141,15 +142,15 @@ void UpdateGameLevel(float elapsed) {
 				penetration = fabs(y_distance - playerHeightHalf - blockHeightHalf);
 
 				if (players[k].position[1] > blocks[i].position[1]) {
-					players[k].position[1] += penetration + 0.001f;
-					players[k].boundaries[0] += penetration + 0.001f;
-					players[k].boundaries[1] += penetration + 0.001f;
+					players[k].position[1] += penetration + ANAPEN;
+					players[k].boundaries[0] += penetration + ANAPEN;
+					players[k].boundaries[1] += penetration + ANAPEN;
 					players[k].collided[1] = true;
 				}
 				else {
-					players[k].position[1] -= (penetration + 0.001f);
-					players[k].boundaries[0] -= (penetration + 0.001f);
-					players[k].boundaries[1] -= (penetration + 0.001f);
+					players[k].position[1] -= (penetration + ANAPEN);
+					players[k].boundaries[0] -= (penetration + ANAPEN);
+					players[k].boundaries[1] -= (penetration + ANAPEN);
 					players[k].collided[0] = true;
 				}
 				players[k].speed[1] = 0.0f;
@@ -175,15 +176,15 @@ void UpdateGameLevel(float elapsed) {
 				penetration = fabs(x_distance - (playerWidthHalf + blockWidthHalf));
 
 				if (players[k].position[0] > blocks[i].position[0]) {
-					players[k].position[0] += penetration + 0.001f;
-					players[k].boundaries[2] += penetration + 0.001f;
-					players[k].boundaries[3] += penetration + 0.001f;
+					players[k].position[0] += penetration + ANAPEN;
+					players[k].boundaries[2] += penetration + ANAPEN;
+					players[k].boundaries[3] += penetration + ANAPEN;
 					players[k].collided[3] = true;
 				}
 				else {
-					players[k].position[0] -= (penetration + 0.001f);
-					players[k].boundaries[2] -= (penetration + 0.001f);
-					players[k].boundaries[3] -= (penetration + 0.001f);
+					players[k].position[0] -= (penetration + ANAPEN);
+					players[k].boundaries[2] -= (penetration + ANAPEN);
+					players[k].boundaries[3] -= (penetration + ANAPEN);
 					players[k].collided[2] = true;
 				}
 				players[k].speed[0] = 0.0f;

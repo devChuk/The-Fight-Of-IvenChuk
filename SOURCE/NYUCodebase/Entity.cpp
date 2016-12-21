@@ -127,18 +127,18 @@ void Entity::updateY(float elapsed) {
 }
 
 void Entity::animate(float elapsed) {
-	//if (collided[1]){
-		counter += elapsed;
+	counter += elapsed;
+	if (abs(speed[1])<0.05){//NOT in AIR
 		if (counter > 0.5){
 			counter = 0;
 			++currT;
 			if (currT > 1)
 				currT = 0;
 		}
-	//}
-	/*if (!collided[1]){
+	}
+	else{//YES in AIR
 		currT = 2;
-	}*/
+	}
 
 	if (currT >= texture.size())
 		currT = 0;
