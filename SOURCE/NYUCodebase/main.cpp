@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
 
 	for (int i = 90; i < 110; i++) {
 		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 4.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
+		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 4.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
 
