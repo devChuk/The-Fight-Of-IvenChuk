@@ -10,6 +10,8 @@
 
 #include "ShaderProgram.h"
 #include "Matrix.h"
+#include "Utils.h"
+#include "Entity.h"
 
 #ifdef _WINDOWS
 #define RESOURCE_FOLDER ""
@@ -17,7 +19,9 @@
 #define RESOURCE_FOLDER "NYUCodebase.app/Contents/Resources/"
 #endif
 
-// SDL & rendering objects
+// GLOBAL GAME VARIABLES____________________________________________________________________________________________________________________________
+
+// SDL & Rendering Objects
 SDL_Window* displayWindow;
 GLuint fontTexture;
 GLuint playerSpriteTexture;
@@ -29,256 +33,54 @@ Matrix viewMatrix;
 Matrix modelMatrix;
 
 ShaderProgram* program;
-class Entity;
-float texture_coords[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f }; // global texture coordinates
+Ut ut; // drawText(), LoadTexture()
 
-// GameLogic values
+// GameLogic & Runtime Values
 enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL };
 int state;
 bool gameRunning = true;
-
-
 float lastFrameTicks = 0.0f;
 float elapsed;
 #define FIXED_TIMESTEP 0.0166666f
 #define MAX_TIMESTEPS 6
 
-bool controlsMoveLeft = false;
-bool controlsMoveRight = false;
-bool controlsJump = false;
+// Player Attributes. p1 is players[0]. p2 is players[1]
+bool p1controlsMoveLeft = false;
+bool p1controlsMoveRight = false;
+bool p1controlsJump = false;
 float playerSpeed = 3.0f;
 
-enum Type { PLAYER, BLOCK, POWERUP };
-
-void DrawText(ShaderProgram* program, int fontTexture, std::string text, float size, float spacing) {
-	float texture_size = 1.0 / 16.0f;
-	std::vector<float> vertexData;
-	std::vector<float> texCoordData;
-
-	for (size_t i = 0; i < text.size(); i++) {
-		float texture_x = (float)(((int)text[i]) % 16) / 16.0f;
-		float texture_y = (float)(((int)text[i]) / 16) / 16.0f;
-		vertexData.insert(vertexData.end(), {
-			((size + spacing) * i) + (-0.5f * size), 0.5f * size,
-			((size + spacing) * i) + (-0.5f * size), -0.5f * size,
-			((size + spacing) * i) + (0.5f * size), 0.5f * size,
-			((size + spacing) * i) + (0.5f * size), -0.5f * size,
-			((size + spacing) * i) + (0.5f * size), 0.5f * size,
-			((size + spacing) * i) + (-0.5f * size), -0.5f * size,
-		});
-		texCoordData.insert(texCoordData.end(), {
-			texture_x, texture_y,
-			texture_x, texture_y + texture_size,
-			texture_x + texture_size, texture_y,
-			texture_x + texture_size, texture_y + texture_size,
-			texture_x + texture_size, texture_y,
-			texture_x, texture_y + texture_size,
-		});
-	}
-	glUseProgram(program->programID);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertexData.data());
-	glEnableVertexAttribArray(program->positionAttribute);
-	glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoordData.data());
-	glEnableVertexAttribArray(program->texCoordAttribute);
-	glBindTexture(GL_TEXTURE_2D, fontTexture);
-	glDrawArrays(GL_TRIANGLES, 0, text.size() * 6);
-
-	glDisableVertexAttribArray(program->positionAttribute);
-	glDisableVertexAttribArray(program->texCoordAttribute);
-}
-
-GLuint LoadTexture(const char* image_path) {
-	SDL_Surface* surface = IMG_Load(image_path);
-
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	SDL_FreeSurface(surface);
-
-	return textureID;
-}
-
-class Entity {
-public:
-	Matrix entityMatrix;
-	float position[2];		//location (center point of entity)
-	float boundaries[4];	//top, bottom, left, right (from position)
-	float size[2];
-	
-	float speed[2];
-	float acceleration[2];
-	bool collided[4]; //same as boundaries, top bot left right
-
-	bool isStatic = true;
-	Type type;
-	
-	float u;
-	float v;
-	float width;
-	float height;
-	GLuint texture;
-
-	Entity() {}
-
-	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, GLuint spriteTexture, Type newType) {
-		position[0] = x;
-		position[1] = y;
-		speed[0] = dx;
-		speed[1] = dy;
-		acceleration[0] = 0;
-		acceleration[1] = 0;
-		entityMatrix.identity();
-		entityMatrix.Translate(x, y, 0);
-		size[0] = 1.0f;
-		size[1] = 1.0f;
-		boundaries[0] = y + 0.05f * size[1] * 2;
-		boundaries[1] = y - 0.05f * size[1] * 2;
-		boundaries[2] = x - 0.05f * size[0] * 2;
-		boundaries[3] = x + 0.05f * size[0] * 2;
-
-		u = spriteU;
-		v = spriteV;
-		width = spriteWidth;
-		height = spriteHeight;
-		texture = spriteTexture;
-		
-		type = newType;
-	}
-	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, GLuint spriteTexture, float sizeX, float sizeY, Type newType) {
-		position[0] = x;
-		position[1] = y;
-		speed[0] = dx;
-		speed[1] = dy;
-		acceleration[0] = 0;
-		acceleration[1] = 0;
-		entityMatrix.identity();
-		entityMatrix.Translate(x, y, 0);
-		size[0] = sizeX;
-		size[1] = sizeY;
-		boundaries[0] = y + 0.05f * size[1] * 2;
-		boundaries[1] = y - 0.05f * size[1] * 2;
-		boundaries[2] = x - 0.05f * size[0] * 2;
-		boundaries[3] = x + 0.05f * size[0] * 2;
-
-		u = spriteU;
-		v = spriteV;
-		width = spriteWidth;
-		height = spriteHeight;
-		texture = spriteTexture;
-
-		type = newType;
-	}
-
-	void draw() {
-		entityMatrix.identity();
-		entityMatrix.Translate(position[0], position[1], 0);
-		program->setModelMatrix(entityMatrix);
-
-		std::vector<float> vertexData;
-		std::vector<float> texCoordData;
-		float texture_x = u;
-		float texture_y = v;
-		vertexData.insert(vertexData.end(), {
-			(-0.1f * size[0]), 0.1f * size[1],
-			(-0.1f * size[0]), -0.1f * size[1],
-			(0.1f * size[0]), 0.1f * size[1],
-			(0.1f * size[0]), -0.1f * size[1],
-			(0.1f * size[0]), 0.1f * size[1],
-			(-0.1f * size[0]), -0.1f * size[1],
-		});
-		texCoordData.insert(texCoordData.end(), {
-			texture_x, texture_y,
-			texture_x, texture_y + height,
-			texture_x + width, texture_y,
-			texture_x + width, texture_y + height,
-			texture_x + width, texture_y,
-			texture_x, texture_y + height,
-		});
-
-		glUseProgram(program->programID);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertexData.data());
-		glEnableVertexAttribArray(program->positionAttribute);
-		glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoordData.data());
-		glEnableVertexAttribArray(program->texCoordAttribute);
-		
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		glDisableVertexAttribArray(program->positionAttribute);
-		glDisableVertexAttribArray(program->texCoordAttribute);
-	}
-
-	void update(float elapsed) {
-		if (!isStatic) {
-
-			speed[0] += acceleration[0];
-			position[0] += speed[0] * elapsed;
-			boundaries[2] += speed[0] * elapsed;
-			boundaries[3] += speed[0] * elapsed;
-
-			speed[1] += acceleration[1];
-			position[1] += speed[1] * elapsed;
-			boundaries[0] += speed[1] * elapsed;
-			boundaries[1] += speed[1] * elapsed;
-		}
-	}
-
-	void updateX(float elapsed) {
-		if (!isStatic) {
-			speed[0] += acceleration[0];
-			position[0] += speed[0] * elapsed;
-			boundaries[2] += speed[0] * elapsed;
-			boundaries[3] += speed[0] * elapsed;
-		}
-	}
-
-	void updateY(float elapsed) {
-		if (!isStatic) {
-			speed[1] += acceleration[1];
-			position[1] += speed[1] * elapsed;
-			boundaries[0] += speed[1] * elapsed;
-			boundaries[1] += speed[1] * elapsed;
-		}
-	}
-
-};
-
-Entity player;
+// Game Object containers
+std::vector<Entity> players;
 std::vector<Entity> blocks;
-std::vector<Entity> powerups;
 
+
+// RENDERING AND UPDATING CODE____________________________________________________________________________________________________________________________
 void RenderMainMenu() {
-
 	//draws text
 	modelMatrix.identity();
-	modelMatrix.Translate(-0.5f, 2.0f, 0.0f);
+	modelMatrix.Translate(-1.0f, 2.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	DrawText(program, fontTexture, "ALIEN", 0.2f, 0.0001f);
-	modelMatrix.Translate(-0.8f, -0.5f, 0.0f);
+	ut.DrawText(program, fontTexture, "IVEN VS CHUK", 0.2f, 0.0001f);
+	modelMatrix.Translate(0.5f, -0.5f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	DrawText(program, fontTexture, "RUNNING AROUND", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "CONTROLS", 0.2f, 0.0001f);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-3.6f, 0.0f, 0.0f);
+	modelMatrix.Translate(-2.6f, 0.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	DrawText(program, fontTexture, "USE SPACE TO JUMP. ARROW KEYS TO MOVE", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "USE ARROW/WASD KEYS TO MOVE", 0.2f, 0.0001f);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-1.6f, -2.0f, 0.0f);
+	modelMatrix.Translate(-1.0f, -1.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	DrawText(program, fontTexture, "PRESS SPACE TO START", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "1/B TO ATTACK", 0.2f, 0.0001f);
+
+
+	modelMatrix.identity();
+	modelMatrix.Translate(-3.5f, -2.0f, 0.0f);
+	program->setModelMatrix(modelMatrix);
+	ut.DrawText(program, fontTexture, "PRESS SPACE TO START. ESC TO EXIT", 0.2f, 0.0001f);
 
 }
 
@@ -287,139 +89,101 @@ void UpdateMainMenu(float elapsed) {
 }
 
 void RenderGameLevel() {
-	player.draw();
+	players[1].draw(program);
+	players[0].draw(program);
 	for (size_t i = 0; i < blocks.size(); i++) {
-		blocks[i].draw();
-	}
-	for (size_t i = 0; i < powerups.size(); i++) {
-		powerups[i].draw();
+		blocks[i].draw(program);
 	}
 	viewMatrix.identity();
-	viewMatrix.Translate(-player.position[0], -player.position[1], 0.0f);
+	viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
 	program->setViewMatrix(viewMatrix);
 }
 
 void UpdateGameLevel(float elapsed) {
 	for (int i = 0; i < 4; i++) {
-		player.collided[i] = false;
+		players[0].collided[i] = false;
+		players[1].collided[i] = false;
 	}
-	
 	float penetration;
-	OutputDebugStringA("Swag");
 
-	player.updateY(elapsed);
-	for (size_t i = 0; i < powerups.size(); i++) {
-		powerups[i].updateY(elapsed);
-	}
+	// Update all Y's first
+	players[0].updateY(elapsed);
+	players[1].updateY(elapsed);
 
-	for (size_t i = 0; i < blocks.size(); i++) {
-		if (player.boundaries[1] < blocks[i].boundaries[0] &&
-			player.boundaries[0] > blocks[i].boundaries[1] &&
-			player.boundaries[2] < blocks[i].boundaries[3] &&
-			player.boundaries[3] > blocks[i].boundaries[2])
-		{
-			float y_distance = fabs(player.position[1] - blocks[i].position[1]);
-			float playerHeightHalf = 0.05f * player.size[1] * 2;
-			float blockHeightHalf = 0.05f * blocks[i].size[1] * 2;
-			penetration = fabs(y_distance - playerHeightHalf - blockHeightHalf);
-
-			if (player.position[1] > blocks[i].position[1]) {
-				player.position[1] += penetration + 0.001f;
-				player.boundaries[0] += penetration + 0.001f;
-				player.boundaries[1] += penetration + 0.001f;
-				player.collided[1] = true;
-			}
-			else {
-				player.position[1] -= (penetration + 0.001f);
-				player.boundaries[0] -= (penetration + 0.001f);
-				player.boundaries[1] -= (penetration + 0.001f);
-				player.collided[0] = true;
-			}
-			player.speed[1] = 0.0f;
-			break;
-		}
-	}
-
-	for (size_t j = 0; j < powerups.size(); j++)
+	for (int k = 0; k < players.size(); k++) {
 		for (size_t i = 0; i < blocks.size(); i++) {
-			if (powerups[j].boundaries[1] < blocks[i].boundaries[0] &&
-				powerups[j].boundaries[0] > blocks[i].boundaries[1] &&
-				powerups[j].boundaries[2] < blocks[i].boundaries[3] &&
-				powerups[j].boundaries[3] > blocks[i].boundaries[2])
+			if (players[k].boundaries[1] < blocks[i].boundaries[0] &&
+				players[k].boundaries[0] > blocks[i].boundaries[1] &&
+				players[k].boundaries[2] < blocks[i].boundaries[3] &&
+				players[k].boundaries[3] > blocks[i].boundaries[2])
 			{
-				float y_distance = fabs(powerups[j].position[1] - blocks[i].position[1]);
-				float powerupsHeightHalf = 0.05f * powerups[j].size[1] * 2;
+				float y_distance = fabs(players[k].position[1] - blocks[i].position[1]);
+				float playerHeightHalf = 0.05f * players[k].size[1] * 2;
 				float blockHeightHalf = 0.05f * blocks[i].size[1] * 2;
-				penetration = fabs(y_distance - powerupsHeightHalf - blockHeightHalf);
+				penetration = fabs(y_distance - playerHeightHalf - blockHeightHalf);
 
-				if (powerups[j].position[1] > blocks[i].position[1]) {
-					powerups[j].position[1] += penetration + 0.001f;
-					powerups[j].boundaries[0] += penetration + 0.001f;
-					powerups[j].boundaries[1] += penetration + 0.001f;
-					powerups[j].speed[1] = 3.0f;
+				if (players[k].position[1] > blocks[i].position[1]) {
+					players[k].position[1] += penetration + 0.001f;
+					players[k].boundaries[0] += penetration + 0.001f;
+					players[k].boundaries[1] += penetration + 0.001f;
+					players[k].collided[1] = true;
 				}
 				else {
-					powerups[j].position[1] -= (penetration + 0.001f);
-					powerups[j].boundaries[0] -= (penetration + 0.001f);
-					powerups[j].boundaries[1] -= (penetration + 0.001f);
-					powerups[j].collided[0] = true;
-					powerups[j].speed[1] = 0.0f;
+					players[k].position[1] -= (penetration + 0.001f);
+					players[k].boundaries[0] -= (penetration + 0.001f);
+					players[k].boundaries[1] -= (penetration + 0.001f);
+					players[k].collided[0] = true;
 				}
-			
+				players[k].speed[1] = 0.0f;
 				break;
 			}
 		}
+	}
 	
-	player.updateX(elapsed);
-	for (size_t i = 0; i < blocks.size(); i++) {
-		if (player.boundaries[1] < blocks[i].boundaries[0] &&
-			player.boundaries[0] > blocks[i].boundaries[1] &&
-			player.boundaries[2] < blocks[i].boundaries[3] &&
-			player.boundaries[3] > blocks[i].boundaries[2])
-		{
-			float x_distance = fabs(player.position[0] - blocks[i].position[0]);
-			float playerWidthHalf = 0.05f * player.size[0] * 2;
-			float blockWidthHalf = 0.05f * blocks[i].size[0] * 2;
-			penetration = fabs(x_distance - (playerWidthHalf + blockWidthHalf));
+	// Update all X's next
+	players[0].updateX(elapsed);
+	players[1].updateX(elapsed);
+	for (int k = 0; k < players.size(); k++) {
+		Entity player = players[k];
+		for (size_t i = 0; i < blocks.size(); i++) {
+			if (players[k].boundaries[1] < blocks[i].boundaries[0] &&
+				players[k].boundaries[0] > blocks[i].boundaries[1] &&
+				players[k].boundaries[2] < blocks[i].boundaries[3] &&
+				players[k].boundaries[3] > blocks[i].boundaries[2])
+			{
+				float x_distance = fabs(players[k].position[0] - blocks[i].position[0]);
+				float playerWidthHalf = 0.05f * players[k].size[0] * 2;
+				float blockWidthHalf = 0.05f * blocks[i].size[0] * 2;
+				penetration = fabs(x_distance - (playerWidthHalf + blockWidthHalf));
 
-			if (player.position[0] > blocks[i].position[0]) {
-				player.position[0] += penetration + 0.001f;
-				player.boundaries[2] += penetration + 0.001f;
-				player.boundaries[3] += penetration + 0.001f;
-				player.collided[3] = true;
+				if (players[k].position[0] > blocks[i].position[0]) {
+					players[k].position[0] += penetration + 0.001f;
+					players[k].boundaries[2] += penetration + 0.001f;
+					players[k].boundaries[3] += penetration + 0.001f;
+					players[k].collided[3] = true;
+				}
+				else {
+					players[k].position[0] -= (penetration + 0.001f);
+					players[k].boundaries[2] -= (penetration + 0.001f);
+					players[k].boundaries[3] -= (penetration + 0.001f);
+					players[k].collided[2] = true;
+				}
+				players[k].speed[0] = 0.0f;
+				break;
 			}
-			else {
-				player.position[0] -= (penetration + 0.001f);
-				player.boundaries[2] -= (penetration + 0.001f);
-				player.boundaries[3] -= (penetration + 0.001f);
-				player.collided[2] = true;
-			}
-			player.speed[0] = 0.0f;
-			break;
 		}
 	}
 
-	player.speed[0] = 0.0f;
-
-	for (size_t i = 0; i < powerups.size(); i++) {
-		if (player.boundaries[1] < powerups[i].boundaries[0] &&
-			player.boundaries[0] > powerups[i].boundaries[1] &&
-			player.boundaries[2] < powerups[i].boundaries[3] &&
-			player.boundaries[3] > powerups[i].boundaries[2])
-		{
-			powerups.erase(powerups.begin() + i);
-			playerSpeed = 10.0f;
-		}
-	}
-
-
+	players[0].speed[0] = 0.0f;
+	players[1].speed[0] = 0.0f;
 	
-	if (controlsMoveLeft)
-		player.speed[0] = -playerSpeed;
-	else if (controlsMoveRight)
-		player.speed[0] = playerSpeed;
-	if (controlsJump && player.collided[1])
-		player.speed[1] = 5.0f;
+	// handle controls
+	if (p1controlsMoveLeft)
+		players[0].speed[0] = -playerSpeed;
+	else if (p1controlsMoveRight)
+		players[0].speed[0] = playerSpeed;
+	if (p1controlsJump && players[0].collided[1])
+		players[0].speed[1] = 5.0f;
 }
 
 void Render() {
@@ -446,6 +210,9 @@ void Update(float elapsed) {
 	}
 }
 
+
+
+// MAIN FUNCTION. SETUP____________________________________________________________________________________________________________________________
 int main(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -466,17 +233,19 @@ int main(int argc, char *argv[])
 	program->setProjectionMatrix(projectionMatrix);
 	program->setViewMatrix(viewMatrix);
 
-	//insert a lot of model matrices
+	//Create GLUint textures
+	fontTexture = ut.LoadTexture("font1.png");
+	playerSpriteTexture = ut.LoadTexture("p1_jump.png");
+	groundTexture = ut.LoadTexture("castleCenter.png");
+	powerupTexture = ut.LoadTexture("cherry.png");
 
-	//create GLUint textures
-	fontTexture = LoadTexture("font1.png");
-	playerSpriteTexture = LoadTexture("p1_jump.png");
-	groundTexture = LoadTexture("castleCenter.png");
-	powerupTexture = LoadTexture("cherry.png");
-	//initialize entities
-	player = Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER);
-	player.isStatic = false;
-	player.acceleration[1] = -0.01f;
+	//Initialize entities
+	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
+	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 1.0f, 1.4f, PLAYER));
+	players[0].isStatic = false;
+	players[0].acceleration[1] = -0.01f;
+	players[1].isStatic = false;
+	players[1].acceleration[1] = -0.01f;
 	
 	for (int i = 0; i < 55; i++) {
 		blocks.push_back(Entity(-2.5f + (i) * 0.2f, 0.0f - (4 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, groundTexture, BLOCK));
@@ -490,42 +259,39 @@ int main(int argc, char *argv[])
 		blocks.push_back(Entity(1.0f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, groundTexture, BLOCK));
 	}
 
-	powerups.push_back(Entity(-1.7f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, powerupTexture, POWERUP));
-	powerups[0].acceleration[1] = -0.01f;
-	powerups[0].isStatic = false;
-
 	while (!done) {
+		// Keyboard Controls
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE || event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				done = true;
 			switch (event.type) {
 				case SDL_KEYDOWN:
-					if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
 						//firing, starting the game
 						if (state == STATE_MAIN_MENU) {
 							state = STATE_GAME_LEVEL;
 						}
 						else {
 							//jump.
-							controlsJump = true;
+							p1controlsJump = true;
 						}
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT && player.boundaries[2] > -3.5f) {
-						controlsMoveLeft = true;
+					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT && players[0].boundaries[2] > -3.5f) {
+						p1controlsMoveLeft = true;
 					}
-					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT && player.boundaries[3] < 3.5f) {
-						controlsMoveRight = true;
+					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT && players[0].boundaries[3] < 3.5f) {
+						p1controlsMoveRight = true;
 					}
 					break;
 				case SDL_KEYUP:
 					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-						controlsMoveLeft = false;
+						p1controlsMoveLeft = false;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-						controlsMoveRight = false;
+						p1controlsMoveRight = false;
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
-						controlsJump = false;
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+						p1controlsJump = false;
 					}
 					break;
 			}
