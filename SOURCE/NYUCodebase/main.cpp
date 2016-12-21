@@ -266,11 +266,15 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[1] = 6.6f;
 	}
 
-
-
-
 	players[0].animate(elapsed);
 	players[1].animate(elapsed);
+	
+
+	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
+		
+		state = STATE_MAIN_MENU;
+		ut.refresh(projectionMatrix, viewMatrix, modelMatrix, program);
+	}
 }
 
 void Render() {
@@ -342,6 +346,7 @@ int main(int argc, char *argv[])
 	//Initialize entities
 	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
 	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
+	players[0].width = -1;
 	players[0].isStatic = false;
 	players[0].acceleration[1] = -9.8f;
 	players[1].isStatic = false;

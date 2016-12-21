@@ -61,3 +61,14 @@ GLuint Ut::LoadTexture(const char* image_path) {
 float Ut::map(float x, float in_min, float in_max, float out_min, float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
+void Ut::refresh(Matrix projectionMatrix, Matrix viewMatrix, Matrix modelMatrix, ShaderProgram* program) {
+	projectionMatrix.identity();
+	modelMatrix.identity();
+	viewMatrix.identity();
+
+	projectionMatrix.setOrthoProjection(-4.0, 4.0, -2.25f, 2.25f, -1.0f, 1.0f);
+	program->setModelMatrix(modelMatrix);
+	program->setProjectionMatrix(projectionMatrix);
+	program->setViewMatrix(viewMatrix);
+}

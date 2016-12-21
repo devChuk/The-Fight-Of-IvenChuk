@@ -27,6 +27,7 @@ public:
 	void DrawText(ShaderProgram* program, int fontTexture, std::string text, float size, float spacing);
 	GLuint LoadTexture(const char* image_path);
 	float map(float x, float in_min, float in_max, float out_min, float out_max);
+	void refresh(Matrix projectionMatrix, Matrix viewMatrix, Matrix modelMatrix, ShaderProgram* program);
 };
 
 #endif
