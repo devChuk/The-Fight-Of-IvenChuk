@@ -128,9 +128,12 @@ void Entity::updateY(float elapsed) {
 
 void Entity::animate(float elapsed) {
 	counter += elapsed;
-	if (!dead){
-		if (gettingWrecked){
+	if (!dead){//Check Hit
+		if (gettingWrecked){//Hit Animation
 			currT = 6;
+			if (cooldown<0.05f){
+				gettingWrecked = false;
+			}
 		}
 		else if (!inAir){//NOT in AIR
 			if (cooldown >= 0.45f || attacking){
@@ -171,7 +174,13 @@ void Entity::animate(float elapsed) {
 		}
 	}
 	else{
+		if (counter > 1.5)
+			counter = 0;
 		currT = 10;
+		if (counter > 0.5){
+			currT = 11;
+			counter = 0.6;
+		}
 	}
 	if (currT >= texture.size())
 		currT = 0;
