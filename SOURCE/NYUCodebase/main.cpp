@@ -414,8 +414,8 @@ int main(int argc, char *argv[])
 	HALDUN = ut.LoadTexture("HaldunMode.png");
 	Hadimioglu = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { HALDUN }, 21.5f, 21.5f, WIZARD);
 	
-	temple = ut.LoadTexture("Temple.png");
-	background1 = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, WIZARD);
+	//temple = ut.LoadTexture("Temple.png");
+	//background1 = Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { temple }, 21.5f, 21.5f, WIZARD);
 	/*fd = ut.LoadTexture("FinalDestination.png");
 	backgrounds.push_back(Entity(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, { fd }, 21.5f, 21.5f, WIZARD));
 	bf = ut.LoadTexture("Battlefield.png");
@@ -456,8 +456,8 @@ int main(int argc, char *argv[])
 
 							//Initialize entities
 							players.clear();
-							players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
-							players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
+							players.push_back(Entity(5.0f, -1.0f, 0.0f, -0.15f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
+							players.push_back(Entity(0.0f, -1.0f, 0.0f, -0.05f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
 							players[0].width = -1;
 							players[0].isStatic = false;
 							players[0].acceleration[1] = -9.8f;
