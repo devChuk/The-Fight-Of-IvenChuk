@@ -306,11 +306,11 @@ void UpdateGameLevel(float elapsed) {
 	
 	// handle controls
 	// Player 1
-	if (p1controlsMoveLeft){
+	if (p1controlsMoveLeft && players[0].cooldown == 0){
 		players[0].speed[0] = -playerSpeed*1.5;
 		players[0].width = -1;
 	}
-	else if (p1controlsMoveRight){
+	else if (p1controlsMoveRight && players[0].cooldown == 0){
 		players[0].speed[0] = playerSpeed*1.5;
 		players[0].width = 1;
 	}
@@ -328,7 +328,7 @@ void UpdateGameLevel(float elapsed) {
 		p1firstJump = false;
 		p1secondJump = false;
 	}
-	if (p1controlsJump) {
+	if (p1controlsJump && players[0].cooldown == 0) {
 		players[0].inAir = true;
 		if (!p1firstJump && players[0].collided[1]) {
 			players[0].speed[1] = 6.6f;
@@ -336,12 +336,12 @@ void UpdateGameLevel(float elapsed) {
 			p1firstJump = true;
 			p1secondJump = false;
 		}
-		else if (p1firstJump && !p1secondJump && p1timeSinceLastJump > 0.4f) {
+		else if (p1firstJump && !p1secondJump && p1timeSinceLastJump > 0.4f ) {
 			p1secondJump = true;
 			players[0].speed[1] = 6.6f;
 		}
 	}
-	if (!p1firstJump && !p1secondJump && p1controlsJump && !players[0].collided[1]) {
+	if (!p1firstJump && !p1secondJump && p1controlsJump && !players[0].collided[1] && players[0].cooldown == 0) {
 		p1secondJump = true;
 		players[0].speed[1] = 6.6f;
 	}
@@ -372,6 +372,8 @@ void UpdateGameLevel(float elapsed) {
 	if (p1NormalAttack && players[0].cooldown == 0) {
 		players[0].cooldown = 0.7f;
 		Mix_PlayChannel(1, chukatk, 0);
+		float hitX = players[0].position[0];
+		float hitY = players[0].position[0];
 	}
 	// Player 2 Attacks
 	if (p2NormalAttack && players[1].cooldown == 0) {
