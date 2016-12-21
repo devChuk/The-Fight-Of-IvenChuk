@@ -128,8 +128,14 @@ void Entity::updateY(float elapsed) {
 
 void Entity::animate(float elapsed) {
 	counter += elapsed;
-	if (!inAir){//NOT in AIR
-		if (speed[0] == 0){
+	if (gettingWrecked){
+		currT = 6;
+	}
+	else if (!inAir){//NOT in AIR
+		if (attacking){
+			currT = 7;
+		}
+		else if (speed[0] == 0){
 			if (fmod(counter, 1) >= 0.5)
 				currT = 0;
 			else
@@ -145,7 +151,12 @@ void Entity::animate(float elapsed) {
 		}
 	}
 	else{//YES in AIR
-		currT = 2;
+		if (attacking){
+			currT = 9;
+		}
+		else{
+			currT = 2;
+		}
 	}
 
 	if (currT >= texture.size())

@@ -437,6 +437,10 @@ int main(int argc, char *argv[])
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukRunning.png"));//Running: 3-5
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukRunning.png"));
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukRunning.png"));
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukGettingHit.png"));//Getting Hit: 6
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukGNormal1.png"));//Ground Attack: 7-8
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukGNormal2.png"));
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukANormal.png"));//Air Attack: 9
 
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding1.png"));//Standing: 0-1
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding2.png"));
@@ -444,6 +448,10 @@ int main(int argc, char *argv[])
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning1.png"));//Running: 3-5
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning2.png"));
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning3.png"));
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenGettingHit.png"));//Getting Hit: 6
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenGNormal.png"));//Ground Attack: 7-8
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenGNormal.png"));
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenANormal.png"));//Air Attack: 9
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
 
