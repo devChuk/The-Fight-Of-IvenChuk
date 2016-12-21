@@ -40,6 +40,8 @@ Ut ut; // drawText(), LoadTexture()
 
 // GameLogic & Runtime Values
 enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL };
+enum GameStage { FINAL_DESTINATION, BATTLEFIELD, TEMPLE };
+int stage = FINAL_DESTINATION;
 int state;
 bool gameRunning = true;
 float lastFrameTicks = 0.0f;
@@ -342,15 +344,6 @@ int main(int argc, char *argv[])
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenRunning3.png"));
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
-
-	//Initialize entities
-	players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
-	players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
-	players[0].width = -1;
-	players[0].isStatic = false;
-	players[0].acceleration[1] = -9.8f;
-	players[1].isStatic = false;
-	players[1].acceleration[1] = -9.8f;
 	
 	// Final Destination
 	/*for (int i = 0; i < 50; i++) {
@@ -397,17 +390,6 @@ int main(int argc, char *argv[])
 		blocks.push_back(Entity(-2.5f + (i)* 0.2f, 4.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
 	}
 
-
-
-
-	//for (int i = 0; i < 4; i++) {
-	//	blocks.push_back(Entity(-2.0f + (i)* 0.2f, 0.0f - (1 * 0.5f), 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	//}
-
-	//for (int i = 0; i < 4; i++) {
-	//	blocks.push_back(Entity(1.0f + (i)* 0.2f, -1.8f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, { groundTexture }, BLOCK));
-	//}
-
 	while (!done) {
 		// Keyboard Controls
 		while (SDL_PollEvent(&event)) {
@@ -417,8 +399,23 @@ int main(int argc, char *argv[])
 				case SDL_KEYDOWN:
 					if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
 						//firing, starting the game
-						if (state == STATE_MAIN_MENU)
+						if (state == STATE_MAIN_MENU) {
 							state = STATE_GAME_LEVEL;
+
+							//Initialize entities
+							players.clear();
+							players.push_back(Entity(5.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, playerSpriteTexture, 7.0f, 7.0f, PLAYER));//Chuk
+							players.push_back(Entity(0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0, 0, player2SpriteTexture, 5.0f, 5.0f, PLAYER));//Iven
+							players[0].width = -1;
+							players[0].isStatic = false;
+							players[0].acceleration[1] = -9.8f;
+							players[1].isStatic = false;
+							players[1].acceleration[1] = -9.8f;
+
+							//Build map
+							
+
+						}
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
 						// Neutral Attack
@@ -432,20 +429,35 @@ int main(int argc, char *argv[])
 					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 						p1controlsJump = true;
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-						p1controlsMoveLeft = true;
-					}
-					else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-						p1controlsMoveRight = true;
+					if (state == STATE_MAIN_MENU) {
+						if (event.key.keysym.scancode == SDL_SCANCODE_LEFT || event.key.keysym.scancode == SDL_SCANCODE_A) {
+							if (stage > 0)
+								stage--;
+							else
+								stage = TEMPLE;
+						}
+						if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT || event.key.keysym.scancode == SDL_SCANCODE_D) {
+							if (stage < 2)
+								stage++;
+							else
+								stage = FINAL_DESTINATION;
+						}
+					} else {
+						if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+							p1controlsMoveLeft = true;
+						}
+						else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+							p1controlsMoveRight = true;
+						}
+						if (event.key.keysym.scancode == SDL_SCANCODE_A) {
+							p2controlsMoveLeft = true;
+						}
+						else if (event.key.keysym.scancode == SDL_SCANCODE_D) {
+							p2controlsMoveRight = true;
+						}
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
 						p2controlsJump = true;
-					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_A) {
-						p2controlsMoveLeft = true;
-					}
-					else if (event.key.keysym.scancode == SDL_SCANCODE_D) {
-						p2controlsMoveRight = true;
 					}
 					break;
 				case SDL_KEYUP:
