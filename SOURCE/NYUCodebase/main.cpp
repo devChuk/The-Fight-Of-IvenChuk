@@ -41,7 +41,7 @@ Ut ut; // drawText(), LoadTexture()
 // GameLogic & Runtime Values
 enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL };
 enum GameStage { FINAL_DESTINATION, BATTLEFIELD, TEMPLE };
-int stage = TEMPLE;
+int stage = FINAL_DESTINATION;
 int state;
 bool gameRunning = true;
 float lastFrameTicks = 0.0f;
@@ -125,9 +125,19 @@ void setUpStage(int& mapstage, std::vector<Entity>& blocks) {
 void RenderMainMenu() {
 	//draws text
 	modelMatrix.identity();
-	modelMatrix.Translate(-1.0f, 2.0f, 0.0f);
+	modelMatrix.Translate(-3.7f, 2.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "IVEN VS CHUK", 0.2f, 0.0001f);
+
+	modelMatrix.identity();
+	modelMatrix.Translate(-0.5f, 2.0f, 0.0f);
+	program->setModelMatrix(modelMatrix);
+	if (stage == FINAL_DESTINATION)
+		ut.DrawText(program, fontTexture, "MAP: FINAL DESTINATION", 0.2f, 0.0001f);
+	else if (stage == BATTLEFIELD)
+		ut.DrawText(program, fontTexture, "MAP: BATTLEFIELD", 0.2f, 0.0001f);
+	else
+		ut.DrawText(program, fontTexture, "MAP: TEMPLE", 0.2f, 0.0001f);
 	
 	modelMatrix.identity();
 	modelMatrix.Translate(-0.5f, -1.25f, 0.0f);
@@ -135,9 +145,9 @@ void RenderMainMenu() {
 	Hadimioglu.draw(program);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-2.6f, -1.5f, 0.0f);
+	modelMatrix.Translate(-3.9f, -1.5f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "USE ARROW/WASD KEYS TO MOVE", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "USE ARROW/WASD KEYS TO MOVE & SELECT MAP", 0.2f, 0.0001f);
 
 	modelMatrix.identity();
 	modelMatrix.Translate(-1.0f, -1.75f, 0.0f);
