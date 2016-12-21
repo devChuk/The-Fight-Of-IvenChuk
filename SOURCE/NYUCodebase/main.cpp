@@ -43,7 +43,7 @@ Ut ut; // drawText(), LoadTexture()
 // GameLogic & Runtime Values
 enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL};
 enum GameStage { FINAL_DESTINATION, BATTLEFIELD, TEMPLE };
-int stage = FINAL_DESTINATION;
+int stage = TEMPLE;
 int state;
 bool gameOver = false;
 bool gameRunning = true;
@@ -307,6 +307,10 @@ void UpdateGameLevel(float elapsed) {
 		players[1].width = 1;
 	}
 	// Player 1 JUMP
+	if (players[0].collided[1]) {
+		p1firstJump = false;
+		p1secondJump = false;
+	}
 	if (p1controlsJump) {
 		players[0].inAir = true;
 		if (!p1firstJump && players[0].collided[1]) {
@@ -320,15 +324,15 @@ void UpdateGameLevel(float elapsed) {
 			players[0].speed[1] = 6.6f;
 		}
 	}
-	if (p1firstJump && p1secondJump && players[0].collided[1]) {
-		p1firstJump = false;
-		p1secondJump = false;
-	}
-	if (!players[0].collided[1] && !p1firstJump && !p1secondJump && p1controlsJump) {
+	if (!p1firstJump && !p1secondJump && p1controlsJump && !players[0].collided[1]) {
 		p1secondJump = true;
 		players[0].speed[1] = 6.6f;
 	}
 	// Player 2 JUMP
+	if (players[1].collided[1]) {
+		p2firstJump = false;
+		p2secondJump = false;
+	}
 	if (p2controlsJump) {
 		players[1].inAir = true;
 		if (!p2firstJump && players[1].collided[1]) {
@@ -342,11 +346,7 @@ void UpdateGameLevel(float elapsed) {
 			players[1].speed[1] = 6.6f;
 		}
 	}
-	if (p2firstJump && p2secondJump && players[1].collided[1]) {
-		p2firstJump = false;
-		p2secondJump = false;
-	}
-	if (!players[1].collided[1] && !p2firstJump && !p2secondJump && p2controlsJump) {
+	if (!p2firstJump && !p2secondJump && p2controlsJump && !players[1].collided[1]) {
 		p2secondJump = true;
 		players[1].speed[1] = 6.6f;
 	}
