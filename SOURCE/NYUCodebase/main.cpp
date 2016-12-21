@@ -352,7 +352,7 @@ void UpdateGameLevel(float elapsed) {
 		p2firstJump = false;
 		p2secondJump = false;
 	}
-	if (p2controlsJump) {
+	if (p2controlsJump && players[1].cooldown == 0) {
 		players[1].inAir = true;
 		if (!p2firstJump && players[1].collided[1]) {
 			players[1].speed[1] = 6.6f;
@@ -365,7 +365,7 @@ void UpdateGameLevel(float elapsed) {
 			players[1].speed[1] = 6.6f;
 		}
 	}
-	if (!p2firstJump && !p2secondJump && p2controlsJump && !players[1].collided[1]) {
+	if (!p2firstJump && !p2secondJump && p2controlsJump && !players[1].collided[1] && players[1].cooldown == 0) {
 		p2secondJump = true;
 		players[1].speed[1] = 6.6f;
 	}
