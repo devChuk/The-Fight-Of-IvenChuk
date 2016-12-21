@@ -325,6 +325,24 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[0] = playerSpeed;
 		players[1].width = 1;
 	}
+	// Player 1 Attacks
+	if (p1NormalAttack && players[0].cooldown == 0) {
+		players[0].cooldown = p1CD;
+		Mix_PlayChannel(1, chukatk, 0);
+		float hitX = players[0].position[0] + (players[0].width * 1.0f);
+		float hitY = players[0].position[1];
+		float distance = sqrt(pow(hitX - players[1].position[0], 2) + pow(hitY - players[1].position[1], 2));
+		
+		if (distance < 1.0f) {
+			players[1].speed[1] = 6.6f;
+		}
+
+	}
+	// Player 2 Attacks
+	if (p2NormalAttack && players[1].cooldown == 0) {
+		players[1].cooldown = p2CD;
+		Mix_PlayChannel(1, ivenatk, 0);
+	}
 	// Player 1 JUMP
 	if (players[0].collided[1]) {
 		p1firstJump = false;
@@ -370,18 +388,6 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[1] = 6.6f;
 	}
 
-	// Player 1 Attacks
-	if (p1NormalAttack && players[0].cooldown == 0) {
-		players[0].cooldown = p1CD;
-		Mix_PlayChannel(1, chukatk, 0);
-		float hitX = players[0].position[0];
-		float hitY = players[0].position[0];
-	}
-	// Player 2 Attacks
-	if (p2NormalAttack && players[1].cooldown == 0) {
-		players[1].cooldown = p2CD;
-		Mix_PlayChannel(1, ivenatk, 0);
-	}
 	players[0].animate(elapsed);
 	players[1].animate(elapsed);
 	
