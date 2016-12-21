@@ -32,6 +32,7 @@ public:
 	float acceleration[2];
 	bool collided[4]; //same as boundaries, top bot left right
 
+	bool facingR = true;
 	bool isStatic = true;
 	Type type;
 
@@ -41,6 +42,7 @@ public:
 	float height;
 	std::vector<GLuint> texture;
 	int currT;
+	float counter = 0;
 
 	Entity();
 	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, Type newType);

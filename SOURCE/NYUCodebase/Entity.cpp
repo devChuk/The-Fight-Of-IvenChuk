@@ -24,7 +24,6 @@ Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth
 	height = spriteHeight;
 	texture = spriteTexture;
 	currT = 0;
-
 	type = newType;
 }
 Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, float sizeX, float sizeY, Type newType) {
@@ -49,7 +48,6 @@ Entity::Entity(float x, float y, float spriteU, float spriteV, float spriteWidth
 	height = spriteHeight;
 	texture = spriteTexture;
 	currT = 0;
-
 	type = newType;
 }
 
@@ -108,11 +106,6 @@ void Entity::update(float elapsed) {
 		boundaries[0] += speed[1] * elapsed;
 		boundaries[1] += speed[1] * elapsed;
 	}
-	if ((elapsed / 5.0) == int(elapsed / 5.0)){
-		++currT;
-		if (currT >= texture.size())
-			currT = 0;
-	}
 }
 
 void Entity::updateX(float elapsed) {
@@ -125,6 +118,13 @@ void Entity::updateX(float elapsed) {
 }
 
 void Entity::updateY(float elapsed) {
+	counter += elapsed;
+	if (counter>0.5){
+		counter = 0;
+		++currT;
+	}
+	if (currT >= texture.size())
+		currT = 0;
 	if (!isStatic) {
 		speed[1] += acceleration[1];
 		position[1] += speed[1] * elapsed;
