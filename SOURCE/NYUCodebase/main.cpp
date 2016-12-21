@@ -471,17 +471,29 @@ int main(int argc, char *argv[])
 							state = STATE_GAME_LEVEL;
 						}
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1 || event.key.keysym.scancode == SDL_SCANCODE_I) {
 						// Neutral Attack
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2 || event.key.keysym.scancode == SDL_SCANCODE_O) {
 						// Strong Attack
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3 || event.key.keysym.scancode == SDL_SCANCODE_P) {
 						// Up Attack
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 						p1controlsJump = true;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_B) {
+						// Neutral Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_N) {
+						// Strong Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_M) {
+						// Up Attack
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
+						p2controlsJump = true;
 					}
 					if (state == STATE_MAIN_MENU) {
 						if (event.key.keysym.scancode == SDL_SCANCODE_LEFT || event.key.keysym.scancode == SDL_SCANCODE_A) {
@@ -510,18 +522,15 @@ int main(int argc, char *argv[])
 							p2controlsMoveRight = true;
 						}
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
-						p2controlsJump = true;
-					}
 					break;
 				case SDL_KEYUP:
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1 || event.key.keysym.scancode == SDL_SCANCODE_I) {
 						// Neutral Attack
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2 || event.key.keysym.scancode == SDL_SCANCODE_O) {
 						// Strong Attack
 					}
-					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3 || event.key.keysym.scancode == SDL_SCANCODE_P) {
 						// Up Attack
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
