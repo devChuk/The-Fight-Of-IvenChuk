@@ -134,6 +134,9 @@ void Entity::animate(float elapsed) {
 	else if (!inAir){//NOT in AIR
 		if (attacking){
 			currT = 7;
+			if (cooldown<0.05f){
+				currT = 8;
+			}
 		}
 		else if (speed[0] == 0){
 			if (fmod(counter, 1) >= 0.5)
