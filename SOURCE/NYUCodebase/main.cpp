@@ -371,6 +371,7 @@ void UpdateGameLevel(float elapsed) {
 				players[0].speed[1] = 2.0f;
 				p1Health -= 10;
 				players[0].gettingWrecked = true;
+				players[0].cooldown = 0.3;
 			}
 		}
 		else {
@@ -383,6 +384,7 @@ void UpdateGameLevel(float elapsed) {
 				players[0].speed[1] = 2.0f;
 				p1Health -= 10;
 				players[0].gettingWrecked = true;
+				players[0].cooldown = 0.3;
 			}
 		}
 	}
