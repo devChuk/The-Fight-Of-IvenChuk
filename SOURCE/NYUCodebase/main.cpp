@@ -52,6 +52,8 @@ float elapsed;
 #define FIXED_TIMESTEP 0.0166666f
 #define MAX_TIMESTEPS 6
 #define ANAPEN 0.0001f
+#define p1CD 0.7f
+#define p2CD 0.5f
 
 // Player Attributes. p1 is players[0]. p2 is players[1]
 float playerSpeed = 3.0f;
@@ -370,12 +372,12 @@ void UpdateGameLevel(float elapsed) {
 
 	// Player 1 Attacks
 	if (p1NormalAttack && players[0].cooldown == 0) {
-		players[0].cooldown = 0.7f;
+		players[0].cooldown = p1CD;
 		Mix_PlayChannel(1, chukatk, 0);
 	}
 	// Player 2 Attacks
 	if (p2NormalAttack && players[1].cooldown == 0) {
-		players[1].cooldown = 0.5f;
+		players[1].cooldown = p2CD;
 		Mix_PlayChannel(1, ivenatk, 0);
 	}
 	players[0].animate(elapsed);

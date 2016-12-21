@@ -132,10 +132,14 @@ void Entity::animate(float elapsed) {
 		currT = 6;
 	}
 	else if (!inAir){//NOT in AIR
-		if (attacking){
+		if (cooldown>=0.45f || attacking){
+			attacking = true;
 			currT = 7;
-			if (cooldown<0.05f){
+			if (cooldown<0.45f){
 				currT = 8;
+			}
+			if (cooldown < 0.05f){
+				attacking = false;
 			}
 		}
 		else if (speed[0] == 0){
@@ -154,8 +158,11 @@ void Entity::animate(float elapsed) {
 		}
 	}
 	else{//YES in AIR
-		if (attacking){
+		if (cooldown>=0.45f || attacking){
+			attacking = true;
 			currT = 9;
+			if (cooldown < 0.05f)
+				attacking = false;
 		}
 		else{
 			currT = 2;
