@@ -51,10 +51,14 @@ float playerSpeed = 3.0f;
 bool p1controlsMoveLeft = false;
 bool p1controlsMoveRight = false;
 bool p1controlsJump = false;
+bool p1firstJump = false;
+bool p1secondJump = false;
 
 bool p2controlsMoveLeft = false;
 bool p2controlsMoveRight = false;
 bool p2controlsJump = false;
+bool p2firstJump = false;
+bool p2secondJump = false;
 
 // Game Object containers
 std::vector<Entity> players;
@@ -105,7 +109,7 @@ void RenderGameLevel() {
 	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
 	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
-	float scale = ut.map(distance, 0.0f, 19.0f, 1.5f, 0.05f);
+	float scale = ut.map(distance, 0.0f, 19.0f, 1.0f, 0.05f);
 	//if (scale <= 0)
 	//	scale *= -1;
 	if (scale < 0.3f)
@@ -215,8 +219,10 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[0] = playerSpeed;
 		players[1].width = 1;
 	}
-	if (p2controlsJump && players[1].collided[1])
+	if (p2controlsJump && players[1].collided[1]) {
 		players[1].speed[1] = 6.6f;
+			
+	}
 	players[0].animate(elapsed);
 	players[1].animate(elapsed);
 }
