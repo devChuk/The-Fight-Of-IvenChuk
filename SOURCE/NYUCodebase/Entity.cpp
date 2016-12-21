@@ -118,17 +118,29 @@ void Entity::updateX(float elapsed) {
 }
 
 void Entity::updateY(float elapsed) {
-	counter += elapsed;
-	if (counter>0.5){
-		counter = 0;
-		++currT;
-	}
-	if (currT >= texture.size())
-		currT = 0;
 	if (!isStatic) {
 		speed[1] += acceleration[1] * elapsed;
 		position[1] += speed[1] * elapsed;
 		boundaries[0] += speed[1] * elapsed;
 		boundaries[1] += speed[1] * elapsed;
 	}
+}
+
+void Entity::animate(float elapsed) {
+	//if (collided[1]){
+		counter += elapsed;
+		if (counter > 0.5){
+			counter = 0;
+			++currT;
+			if (currT > 1)
+				currT = 0;
+		}
+	//}
+	/*if (!collided[1]){
+		currT = 2;
+	}*/
+
+	if (currT >= texture.size())
+		currT = 0;
+	
 }

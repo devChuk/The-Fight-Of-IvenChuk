@@ -32,13 +32,12 @@ public:
 	float acceleration[2];
 	bool collided[4]; //same as boundaries, top bot left right
 
-	bool facingR = true;
 	bool isStatic = true;
 	Type type;
 
 	float u;
 	float v;
-	float width;
+	float width;//1 is facing right, -1 is facing left
 	float height;
 	std::vector<GLuint> texture;
 	int currT;
@@ -51,6 +50,7 @@ public:
 	void update(float elapsed);
 	void updateX(float elapsed);
 	void updateY(float elapsed);
+	void animate(float elapsed);
 };
 
 

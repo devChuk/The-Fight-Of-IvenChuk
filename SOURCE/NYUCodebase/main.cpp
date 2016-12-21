@@ -196,19 +196,29 @@ void UpdateGameLevel(float elapsed) {
 	players[1].speed[0] = 0.0f;
 	
 	// handle controls
-	if (p1controlsMoveLeft)
+	if (p1controlsMoveLeft){
 		players[0].speed[0] = -playerSpeed;
-	else if (p1controlsMoveRight)
+		players[0].width = -1;
+	}
+	else if (p1controlsMoveRight){
 		players[0].speed[0] = playerSpeed;
+		players[0].width = 1;
+	}
 	if (p1controlsJump && players[0].collided[1])
 		players[0].speed[1] = 6.6f;
 
-	if (p2controlsMoveLeft)
+	if (p2controlsMoveLeft){
 		players[1].speed[0] = -playerSpeed;
-	else if (p2controlsMoveRight)
+		players[1].width = -1;
+	}
+	else if (p2controlsMoveRight){
 		players[1].speed[0] = playerSpeed;
+		players[1].width = 1;
+	}
 	if (p2controlsJump && players[1].collided[1])
 		players[1].speed[1] = 6.6f;
+	players[0].animate(elapsed);
+	players[1].animate(elapsed);
 }
 
 void Render() {
@@ -260,10 +270,14 @@ int main(int argc, char *argv[])
 
 	//Create GLUint textures
 	fontTexture = ut.LoadTexture("font1.png");
-	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));
+
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding1.png"));//Standing: 0-1
 	playerSpriteTexture.push_back(ut.LoadTexture("ChukStanding2.png"));
-	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding1.png"));
+	playerSpriteTexture.push_back(ut.LoadTexture("ChukJumping.png"));//Jumping: 2
+
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding1.png"));//Standing: 0-1
 	player2SpriteTexture.push_back(ut.LoadTexture("IvenStanding2.png"));
+	player2SpriteTexture.push_back(ut.LoadTexture("IvenJumping.png"));//Jumping: 2
 	groundTexture = ut.LoadTexture("castleCenter.png");
 	powerupTexture = ut.LoadTexture("cherry.png");
 
