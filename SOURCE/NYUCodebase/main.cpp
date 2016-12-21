@@ -40,10 +40,11 @@ ShaderProgram* program;
 Ut ut; // drawText(), LoadTexture()
 
 // GameLogic & Runtime Values
-enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL };
+enum GameState { STATE_MAIN_MENU, STATE_GAME_LEVEL};
 enum GameStage { FINAL_DESTINATION, BATTLEFIELD, TEMPLE };
 int stage = FINAL_DESTINATION;
 int state;
+bool gameOver = false;
 bool gameRunning = true;
 float lastFrameTicks = 0.0f;
 float elapsed;
@@ -174,19 +175,36 @@ void RenderGameLevel() {
 	for (size_t i = 0; i < blocks.size(); i++) {
 		blocks[i].draw(program);
 	}
+	float averageViewX = (players[0].position[0] + players[1].position[0]) / 2;
+	float averageViewY = (players[0].position[1] + players[1].position[1]) / 2;
 	viewMatrix.identity();
-	float averageViewX = (players[0].position[0] + players[1].position[0])/2;
-	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
-	
-	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
-	float scale = ut.map(distance, 0.0f, 18.0f, 1.0f, 0.05f);
-	if (scale < 0.3f)
-		scale = 0.3f;
 
-	viewMatrix.Scale(scale, scale, 1.0f);
-	viewMatrix.Translate(-averageViewX, -averageViewY, 0.0f);
+	if (gameOver) {
+		modelMatrix.identity();
+		modelMatrix.Translate(averageViewX - 2.0f, averageViewY, 0.0f);
+		program->setModelMatrix(modelMatrix);
+		if (players[0].position[1] <= -19.0f) {
+			viewMatrix.Translate(-players[1].position[0], -players[1].position[1], 0.0f);
+			ut.DrawText(program, fontTexture, "IVEN WINS", 0.5f, 0.0001f);
+		}
+		else if (players[1].position[1] <= -19.0f) {
+			viewMatrix.Translate(-players[0].position[0], -players[0].position[1], 0.0f);
+			ut.DrawText(program, fontTexture, "CHUK WINS", 0.5f, 0.0001f);
+		}
+	}
+	else {
+		
 
-	program->setViewMatrix(viewMatrix);
+		float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
+		float scale = ut.map(distance, 0.0f, 18.0f, 1.0f, 0.05f);
+		if (scale < 0.3f)
+			scale = 0.3f;
+
+		viewMatrix.Scale(scale, scale, 1.0f);
+		viewMatrix.Translate(-averageViewX, -averageViewY, 0.0f);
+
+		program->setViewMatrix(viewMatrix);
+	}
 }
 
 void UpdateGameLevel(float elapsed) {
@@ -337,8 +355,9 @@ void UpdateGameLevel(float elapsed) {
 	
 
 	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
-		state = STATE_MAIN_MENU;
-		ut.refresh(projectionMatrix, viewMatrix, modelMatrix, program);
+		gameOver = true;
+		gameRunning = false;
+		//viewMatrix.Translate
 	}
 }
 
@@ -426,7 +445,13 @@ int main(int argc, char *argv[])
 				case SDL_KEYDOWN:
 					if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
 						//firing, starting the game
-						if (state == STATE_MAIN_MENU) {
+						if (gameOver == true) {
+							gameOver = false;
+							gameRunning = true;
+							state = STATE_MAIN_MENU;
+							ut.refresh(projectionMatrix, viewMatrix, modelMatrix, program);
+						}
+						else if (state == STATE_MAIN_MENU) {
 
 							//Initialize entities
 							players.clear();
