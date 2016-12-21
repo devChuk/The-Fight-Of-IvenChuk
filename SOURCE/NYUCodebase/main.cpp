@@ -482,7 +482,8 @@ int main(int argc, char *argv[])
 						}
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1 || event.key.keysym.scancode == SDL_SCANCODE_I) {
-						// Neutral Attack
+						// Player 1 Neutral Attack
+						Mix_PlayChannel(1, chukatk, 0);
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2 || event.key.keysym.scancode == SDL_SCANCODE_O) {
 						// Strong Attack
@@ -494,7 +495,8 @@ int main(int argc, char *argv[])
 						p1controlsJump = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_B) {
-						// Neutral Attack
+						// Player 2 Neutral Attack
+						Mix_PlayChannel(1, ivenatk, 0);
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_N) {
 						// Strong Attack
