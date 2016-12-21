@@ -61,13 +61,15 @@ bool p1controlsJump = false;
 bool p1firstJump = false;
 bool p1secondJump = false;
 float p1timeSinceLastJump = 0.0f;
-float p2timeSinceLastJump = 0.0f;
+float p1Health = 100;
 
 bool p2controlsMoveLeft = false;
 bool p2controlsMoveRight = false;
 bool p2controlsJump = false;
 bool p2firstJump = false;
 bool p2secondJump = false;
+float p2timeSinceLastJump = 0.0f;
+float p2Health = 100;
 
 // Game Object containers
 std::vector<Entity> players;
@@ -208,6 +210,11 @@ void RenderGameLevel() {
 
 	modelMatrix.identity();
 	modelMatrix.Translate(players[0].position[0] - 0.25f, players[0].position[1] + 0.4f, 0.0f);
+	program->setModelMatrix(modelMatrix);
+	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
+
+	modelMatrix.identity();
+	modelMatrix.Translate(players[1].position[0] - 0.25f, players[1].position[1] + 0.4f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
 }
