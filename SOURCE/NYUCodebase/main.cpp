@@ -306,20 +306,20 @@ void UpdateGameLevel(float elapsed) {
 	
 	// handle controls
 	// Player 1
-	if (p1controlsMoveLeft && players[0].cooldown == 0){
+	if (p1controlsMoveLeft && (players[0].cooldown == 0 || players[0].inAir)){
 		players[0].speed[0] = -playerSpeed*1.5;
 		players[0].width = -1;
 	}
-	else if (p1controlsMoveRight && players[0].cooldown == 0){
+	else if (p1controlsMoveRight && (players[0].cooldown == 0 || players[0].inAir)){
 		players[0].speed[0] = playerSpeed*1.5;
 		players[0].width = 1;
 	}
 	// Player 2
-	if (p2controlsMoveLeft){
+	if (p2controlsMoveLeft && (players[1].cooldown == 0 || players[1].inAir)){
 		players[1].speed[0] = -playerSpeed;
 		players[1].width = -1;
 	}
-	else if (p2controlsMoveRight){
+	else if (p2controlsMoveRight && (players[1].cooldown == 0 || players[1].inAir)){
 		players[1].speed[0] = playerSpeed;
 		players[1].width = 1;
 	}
