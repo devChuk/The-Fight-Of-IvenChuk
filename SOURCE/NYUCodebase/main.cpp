@@ -61,7 +61,11 @@ bool p1controlsJump = false;
 bool p1firstJump = false;
 bool p1secondJump = false;
 float p1timeSinceLastJump = 0.0f;
-float p1Health = 100;
+int p1Health = 100;
+float p1Cooldown = 0;
+bool p1NormalAttack;
+bool p1StrongAttack;
+bool p1UpAttack;
 
 bool p2controlsMoveLeft = false;
 bool p2controlsMoveRight = false;
@@ -69,7 +73,11 @@ bool p2controlsJump = false;
 bool p2firstJump = false;
 bool p2secondJump = false;
 float p2timeSinceLastJump = 0.0f;
-float p2Health = 100;
+int p2Health = 100;
+float p2Cooldown = 0;
+bool p2NormalAttack;
+bool p2StrongAttack;
+bool p2UpAttack;
 
 // Game Object containers
 std::vector<Entity> players;
@@ -211,12 +219,12 @@ void RenderGameLevel() {
 	modelMatrix.identity();
 	modelMatrix.Translate(players[0].position[0] - 0.25f, players[0].position[1] + 0.4f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
+	ut.DrawText(program, fontTexture, std::to_string(p1Health), 0.2f, 0.000001f);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(players[1].position[0] - 0.25f, players[1].position[1] + 0.4f, 0.0f);
+	modelMatrix.Translate(players[1].position[0] - 0.25f, players[1].position[1] + 0.6f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "100", 0.2f, 0.000001f);
+	ut.DrawText(program, fontTexture, std::to_string(p2Health), 0.2f, 0.000001f);
 }
 
 void UpdateGameLevel(float elapsed) {
@@ -362,10 +370,19 @@ void UpdateGameLevel(float elapsed) {
 		players[1].speed[1] = 6.6f;
 	}
 
+	// Player 1 Attacks
+	if (p1NormalAttack && p1Cooldown == 0) {
+		p1Cooldown = 0.7f;
+		Mix_PlayChannel(1, chukatk, 0);
+	}
+	// Player 2 Attacks
+	if (p2NormalAttack && p2Cooldown == 0) {
+		p2Cooldown = 0.5f;
+		Mix_PlayChannel(1, ivenatk, 0);
+	}
 	players[0].animate(elapsed);
 	players[1].animate(elapsed);
 	
-
 	if (players[1].position[1] <= -19.0f || players[0].position[1] <= -19.0f) {
 		gameOver = true;
 		gameRunning = false;
@@ -500,26 +517,30 @@ int main(int argc, char *argv[])
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1 || event.key.keysym.scancode == SDL_SCANCODE_I) {
 						// Player 1 Neutral Attack
-						Mix_PlayChannel(1, chukatk, 0);
+						p1NormalAttack = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2 || event.key.keysym.scancode == SDL_SCANCODE_O) {
 						// Strong Attack
+						p1StrongAttack = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3 || event.key.keysym.scancode == SDL_SCANCODE_P) {
 						// Up Attack
+						p1UpAttack = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 						p1controlsJump = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_B) {
 						// Player 2 Neutral Attack
-						Mix_PlayChannel(1, ivenatk, 0);
+						p2NormalAttack = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_N) {
 						// Strong Attack
+						p2StrongAttack = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_M) {
 						// Up Attack
+						p2UpAttack = true;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_W) {
 						p2controlsJump = true;
@@ -555,12 +576,15 @@ int main(int argc, char *argv[])
 				case SDL_KEYUP:
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_1 || event.key.keysym.scancode == SDL_SCANCODE_I) {
 						// Neutral Attack
+						p1NormalAttack = false;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_2 || event.key.keysym.scancode == SDL_SCANCODE_O) {
 						// Strong Attack
+						p1StrongAttack = false;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_KP_3 || event.key.keysym.scancode == SDL_SCANCODE_P) {
 						// Up Attack
+						p1UpAttack = false;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
 						p1controlsMoveLeft = false;
@@ -570,6 +594,18 @@ int main(int argc, char *argv[])
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 						p1controlsJump = false;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_B) {
+						// Player 2 Neutral Attack
+						p2NormalAttack = false;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_N) {
+						// Strong Attack
+						p2StrongAttack = false;
+					}
+					if (event.key.keysym.scancode == SDL_SCANCODE_M) {
+						// Up Attack
+						p2UpAttack = false;
 					}
 					if (event.key.keysym.scancode == SDL_SCANCODE_A) {
 						p2controlsMoveLeft = false;
@@ -597,8 +633,20 @@ int main(int argc, char *argv[])
 				fixedElapsed -= FIXED_TIMESTEP;
 				Update(FIXED_TIMESTEP);
 			}
+
+			///
 			p1timeSinceLastJump += fixedElapsed;
 			p2timeSinceLastJump += fixedElapsed;
+			p1Cooldown -= fixedElapsed;
+			p2Cooldown -= fixedElapsed;
+
+			if (p1Cooldown <= 0)
+				p1Cooldown = 0;
+			
+			if (p2Cooldown <= 0)
+				p2Cooldown = 0;
+			///
+
 			Update(fixedElapsed);
 			Render();
 		}
