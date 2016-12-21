@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <SDL_mixer.h>
 
 #include "ShaderProgram.h"
 #include "Matrix.h"

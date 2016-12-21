@@ -22,6 +22,7 @@
 #endif
 
 // GLOBAL GAME VARIABLES____________________________________________________________________________________________________________________________
+//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
 // SDL & Rendering Objects
 SDL_Window* displayWindow;
@@ -85,18 +86,18 @@ void RenderMainMenu() {
 	Hadimioglu.draw(program);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-2.6f, -1.5f, 0.0f);
+	modelMatrix.Translate(-2.9f, -1.5f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "USE ARROW/WASD KEYS TO MOVE", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "USE ARROWS / WASD KEYS TO MOVE", 0.2f, 0.0001f);
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-1.0f, -1.75f, 0.0f);
+	modelMatrix.Translate(-2.2f, -1.75f, 0.0f);
 	program->setModelMatrix(modelMatrix);
-	ut.DrawText(program, fontTexture, "1/B TO ATTACK", 0.2f, 0.0001f);
+	ut.DrawText(program, fontTexture, "NUMPAD 1 / B TO ATTACK", 0.2f, 0.0001f);
 
 
 	modelMatrix.identity();
-	modelMatrix.Translate(-3.5f, -2.0f, 0.0f);
+	modelMatrix.Translate(-3.3f, -2.0f, 0.0f);
 	program->setModelMatrix(modelMatrix);
 	ut.DrawText(program, fontTexture, "PRESS SPACE TO START. ESC TO EXIT", 0.2f, 0.0001f);
 
