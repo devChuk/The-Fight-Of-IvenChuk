@@ -113,9 +113,7 @@ void RenderGameLevel() {
 	float averageViewY = (players[0].position[1] + players[1].position[1])/2;
 	
 	float distance = sqrt(pow(players[0].position[0] - players[1].position[0], 2) + pow(players[0].position[1] - players[1].position[1], 2));
-	float scale = ut.map(distance, 0.0f, 19.0f, 1.0f, 0.05f);
-	//if (scale <= 0)
-	//	scale *= -1;
+	float scale = ut.map(distance, 0.0f, 18.0f, 1.0f, 0.05f);
 	if (scale < 0.3f)
 		scale = 0.3f;
 
@@ -246,9 +244,6 @@ void UpdateGameLevel(float elapsed) {
 		players[0].speed[1] = 6.6f;
 	}
 	// Player 2 JUMP
-	/*if (p2controlsJump && players[1].collided[1]) {
-		players[1].speed[1] = 6.6f;
-	}*/
 	if (p2controlsJump) {
 		players[1].inAir = true;
 		if (!p2firstJump && players[1].collided[1]) {
