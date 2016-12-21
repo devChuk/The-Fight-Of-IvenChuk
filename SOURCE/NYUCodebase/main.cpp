@@ -62,7 +62,6 @@ bool p1firstJump = false;
 bool p1secondJump = false;
 float p1timeSinceLastJump = 0.0f;
 int p1Health = 100;
-float p1Cooldown = 0;
 bool p1NormalAttack;
 bool p1StrongAttack;
 bool p1UpAttack;
@@ -74,7 +73,6 @@ bool p2firstJump = false;
 bool p2secondJump = false;
 float p2timeSinceLastJump = 0.0f;
 int p2Health = 100;
-float p2Cooldown = 0;
 bool p2NormalAttack;
 bool p2StrongAttack;
 bool p2UpAttack;
@@ -371,13 +369,13 @@ void UpdateGameLevel(float elapsed) {
 	}
 
 	// Player 1 Attacks
-	if (p1NormalAttack && p1Cooldown == 0) {
-		p1Cooldown = 0.7f;
+	if (p1NormalAttack && players[0].cooldown == 0) {
+		players[0].cooldown = 0.7f;
 		Mix_PlayChannel(1, chukatk, 0);
 	}
 	// Player 2 Attacks
-	if (p2NormalAttack && p2Cooldown == 0) {
-		p2Cooldown = 0.5f;
+	if (p2NormalAttack && players[1].cooldown == 0) {
+		players[1].cooldown = 0.5f;
 		Mix_PlayChannel(1, ivenatk, 0);
 	}
 	players[0].animate(elapsed);
@@ -637,14 +635,16 @@ int main(int argc, char *argv[])
 			///
 			p1timeSinceLastJump += fixedElapsed;
 			p2timeSinceLastJump += fixedElapsed;
-			p1Cooldown -= fixedElapsed;
-			p2Cooldown -= fixedElapsed;
+			if (players.size() >= 2){
+				players[0].cooldown -= fixedElapsed;
+				players[1].cooldown -= fixedElapsed;
 
-			if (p1Cooldown <= 0)
-				p1Cooldown = 0;
-			
-			if (p2Cooldown <= 0)
-				p2Cooldown = 0;
+				if (players[0].cooldown <= 0)
+					players[0].cooldown = 0;
+
+				if (players[1].cooldown <= 0)
+					players[1].cooldown = 0;
+			}
 			///
 
 			Update(fixedElapsed);

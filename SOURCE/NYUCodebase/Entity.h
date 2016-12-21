@@ -45,6 +45,7 @@ public:
 	bool inAir = false;
 	bool attacking = false;
 	bool gettingWrecked = false;
+	float cooldown = 0;
 
 	Entity();
 	Entity(float x, float y, float spriteU, float spriteV, float spriteWidth, float spriteHeight, float dx, float dy, std::vector<GLuint> spriteTexture, Type newType);
